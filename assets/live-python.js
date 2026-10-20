@@ -73,6 +73,8 @@ function execute(code) {
     } catch (error) {pending=null;reject(error);}
   });
 }
+// Motor compartido con «Mis cuadernos» (cuadernos.html).
+window.SICPython={execute,stop:stopRunner};
 function h(tag,attrs={},txt='') {
   const node=document.createElement(tag);
   for(const [key,value] of Object.entries(attrs)) node.setAttribute(key,value);
@@ -159,5 +161,15 @@ if(topNav && count){
   const btn=h('button',{'type':'button','class':'nav-btn','title':'Detener un programa de Python bloqueado'},'■ Detener Python');
   btn.addEventListener('click',stopRunner);
   topNav.prepend(btn);
+  // Abre un cuaderno nuevo ligado a esta clase y al tema de la diapositiva actual.
+  const nb=h('button',{'type':'button','class':'nav-btn','title':'Abrir un cuaderno nuevo para practicar este tema'},'＋ Cuaderno');
+  nb.addEventListener('click',()=>{
+    const active=document.querySelector('.slide.active');
+    const tema=(active?.querySelector('h2,h1')?.textContent || '').trim();
+    const params=new URLSearchParams({nuevo:'1',clase:lesson.replace(/\.html$/,'')});
+    if(tema) params.set('tema',tema.slice(0,120));
+    window.open('cuadernos.html?'+params.toString(),'_blank','noopener');
+  });
+  topNav.prepend(nb);
 }
 })();

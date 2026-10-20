@@ -6,6 +6,7 @@ Biblioteca de repaso del Capítulo 2: presentaciones HTML interactivas con Pytho
 
 - [Clase 1: Estructuras de datos](clase_1.html)
 - [Clase 2: Aplicaciones prácticas](clase_2.html)
+- [Mis cuadernos: diapositivas propias con Python](cuadernos.html)
 - [Guía de uso y edición](LEEME.md)
 
 ## Publicar con GitHub Pages
@@ -23,6 +24,15 @@ Dirección esperada después de la publicación: https://carlos09or.github.io/Sa
 - La primera ejecución **requiere acceso a Internet** para descargar Pyodide (Python basado en WebAssembly). Después, el código se ejecuta en tu navegador, no en un servidor externo.
 - El botón **Detener Python** cancela las ejecuciones bloqueadas y reinicia la sesión de Python.
 - Algunas librerías externas necesitan configuración adicional. Los ejemplos de este capítulo usan la biblioteca estándar.
+
+## Mis cuadernos
+
+`cuadernos.html` es un cuaderno personal en forma de diapositivas: cada diapositiva tiene **título, notas, una celda de Python y su salida real**. Los cuadernos se organizan en **carpetas y subcarpetas**.
+
+- Desde cualquier clase, el botón **＋ Cuaderno** abre un cuaderno nuevo en la carpeta de esa clase, con el tema de la diapositiva actual como título.
+- Las variables se conservan entre diapositivas mientras no pulses **Reiniciar Python**, como en Colab. **▶▶ Ejecutar todo** recorre el cuaderno en orden.
+- Todo se guarda solo (notas, código y la última salida).
+- Sin configurar nada se guarda en **este navegador**. Con Supabase se guarda en la nube, privado para tu cuenta y visible desde cualquier dispositivo. Pasos en [LEEME.md](LEEME.md#mis-cuadernos-en-la-nube-supabase).
 
 ## Regenerar presentaciones desde Quarto Live
 

@@ -57,3 +57,22 @@ También puedes publicar los HTML sin reconstruirlos con Quarto; están empaquet
 ## Modo interactivo
 
 Las diapositivas permiten **editar y ejecutar Python directamente**. Cada celda tiene un botón Ejecutar, el resultado real y la salida esperada desplegable. El intérprete Pyodide se descarga de Internet en el primer uso. Los cambios de código se guardan localmente en el navegador. Para generar presentaciones editables desde los archivos `.qmd`, ejecuta `quarto add r-wasm/quarto-live` y después `quarto render clase_1.qmd` o `quarto render clase_2.qmd`.
+
+
+## Mis cuadernos en la nube (Supabase)
+
+`cuadernos.html` funciona sin configurar nada guardando en el navegador. Para guardar en la nube (privado, desde cualquier dispositivo) se usa [Supabase](https://supabase.com), una base de datos Postgres con plan gratuito:
+
+1. Crea una cuenta en supabase.com y un proyecto nuevo (plan Free).
+2. En el proyecto, abre **SQL Editor → New query**, pega todo `supabase/schema.sql` y pulsa **Run**. Crea las tablas `carpetas` y `cuadernos` con seguridad por usuario (RLS).
+3. En **Authentication → URL Configuration**:
+   - **Site URL:** `https://carlos09or.github.io/Samsung-Innovation-Campus/cuadernos.html`
+   - **Redirect URLs:** añade la misma dirección.
+4. En **Project Settings → API**, copia **Project URL** y la clave **anon public** dentro de `assets/cuadernos-config.js` (`url` y `anonKey`). Haz commit y push. La clave `anon` es pública por diseño; **nunca** pongas la clave `service_role`.
+5. Abre Mis cuadernos en GitHub Pages, escribe tu correo y pulsa **Entrar**. Te llega un enlace; ábrelo en el mismo navegador.
+6. Ya con tu cuenta creada, para que nadie más pueda registrarse: **Authentication → Sign In / Providers → desactiva «Allow new users to sign up»**. Aunque alguien se registrara, no podría ver tus cuadernos.
+
+Si antes usaste cuadernos en modo local, tras iniciar sesión aparece el botón **Subir … a la nube** para pasarlos a tu cuenta.
+
+Notas: los proyectos gratuitos de Supabase se pausan tras una semana sin actividad; se reactivan desde el panel de Supabase. Para respaldo, en **Database → Backups** o exportando las tablas desde **Table Editor**.
+
