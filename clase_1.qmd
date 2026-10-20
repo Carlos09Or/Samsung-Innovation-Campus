@@ -1,0 +1,1203 @@
+---
+title: "Clase 1 — Estructuras de datos"
+subtitle: "Samsung Innovation Campus · Capítulo 2"
+lang: es
+format:
+  revealjs:
+    theme: night
+    transition: fade
+    navigation-mode: linear
+    slide-number: c/t
+    progress: true
+    controls: true
+    code-copy: true
+    smaller: true
+    scrollable: true
+    css: assets/quarto.css
+execute:
+  eval: false
+---
+
+## Cómo estudiar con esta presentación {.scrollable}
+
+<span class="study-topic">Inicio</span>
+
+Recorre cada tema en tres pasos: entender → predecir → comprobar.
+
+- Lee la explicación antes de mirar el código.
+- Predice qué imprimirá Python y luego revisa la salida.
+- Copia el ejemplo y cambia un dato en Colab para probar tu hipótesis.
+
+::: {.callout-tip title="Idea clave"}
+Las diapositivas de práctica guardan la solución oculta hasta que decidas verla.
+:::
+
+# 01 / Listas
+
+Secuencias ordenadas que podemos modificar.
+
+## ¿Qué es una lista? {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+Una lista agrupa varios valores bajo un solo nombre. Conserva el orden de los elementos y permite cambiarlos.
+
+- Se crea con corchetes: `[ ]`.
+- Puede contener distintos tipos de datos.
+- Su primer elemento tiene índice `0`.
+
+```python
+frutas = ["Melocotón", "Sandia", "Banana", "Papaya"]
+print(frutas[0])
+```
+
+**Salida esperada**
+
+```text
+Melocotón
+```
+
+::: {.callout-tip title="Idea clave"}
+Una lista es mutable: puedes agregar, eliminar o reemplazar elementos.
+:::
+
+## `len()` · ¿Cuántos elementos hay? {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+`len(secuencia)` devuelve el número de elementos; no el índice de la última posición.
+
+- Una lista de 3 elementos tiene longitud `3`.
+- Sus índices válidos son `0`, `1` y `2`.
+
+```python
+frutas = ["manzana", "cambur", "patilla"]
+print(len(frutas))
+print(frutas[2])
+```
+
+**Salida esperada**
+
+```text
+3
+patilla
+```
+
+::: {.callout-tip title="Idea clave"}
+Último índice = `len(lista) - 1` (cuando la lista no está vacía).
+:::
+
+## Índices positivos y negativos {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+Los índices positivos cuentan desde el inicio; los negativos cuentan desde el final.
+
+- `frutas[0]` → primero.
+- `frutas[-1]` → último.
+- `frutas[-2]` → penúltimo.
+
+```python
+frutas = ["manzana", "cambur", "patilla"]
+print(frutas[0])
+print(frutas[-1])
+```
+
+**Salida esperada**
+
+```text
+manzana
+patilla
+```
+
+::: {.callout-tip title="Idea clave"}
+Si pides una posición inexistente, aparece `IndexError`.
+:::
+
+## Rebanadas (slicing) y rangos {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+Con `[inicio:fin]` seleccionas posiciones desde `inicio` hasta ANTES de `fin`.
+
+- El límite derecho nunca se incluye.
+- `lista[1:3]` toma los índices `1` y `2`.
+- También funciona en `del` para borrar un rango.
+
+```python
+frutas = ["manzana", "pera", "plátano", "uva"]
+print(frutas[1:3])
+del frutas[0:2]
+print(frutas)
+```
+
+**Salida esperada**
+
+```text
+['pera', 'plátano']
+['plátano', 'uva']
+```
+
+::: {.callout-tip title="Idea clave"}
+Piensa en `[inicio:fin)`; esta idea explica muchas operaciones con secuencias.
+:::
+
+## Concatenar listas con `+` {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+El operador `+` crea una lista nueva con los elementos de ambas listas, en ese orden.
+
+- No modifica necesariamente las listas originales.
+- Es distinto de sumar números elemento por elemento.
+
+```python
+lista1 = [1, 2, 3]
+lista2 = [4, 5, 6]
+combinada = lista1 + lista2
+print(combinada)
+```
+
+**Salida esperada**
+
+```text
+[1, 2, 3, 4, 5, 6]
+```
+
+::: {.callout-tip title="Idea clave"}
+Este ejemplo aparece en el Colab como «Adición de listas».
+:::
+
+## `append()` · Añadir un elemento {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+`append(x)` coloca `x` como UN solo elemento al final.
+
+- Modifica la lista existente.
+- No devuelve la lista: su valor de retorno es `None`.
+
+```python
+carros = ["Ferrari", "Lamborghini"]
+carros.append("Rolls-Royce")
+print(carros)
+```
+
+**Salida esperada**
+
+```text
+['Ferrari', 'Lamborghini', 'Rolls-Royce']
+```
+
+::: {.callout-tip title="Idea clave"}
+Úsalo cuando quieres añadir un único elemento.
+:::
+
+## `extend()` · Añadir varios elementos {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+`extend(iterable)` recorre los elementos de otro iterable y los agrega uno por uno.
+
+- `append([3,4])` agrega una lista dentro de la lista.
+- `extend([3,4])` agrega dos números separados.
+
+```python
+a = [1, 2]
+b = [1, 2]
+a.append([3, 4])
+b.extend([3, 4])
+print(a)
+print(b)
+```
+
+**Salida esperada**
+
+```text
+[1, 2, [3, 4]]
+[1, 2, 3, 4]
+```
+
+::: {.callout-tip title="Idea clave"}
+Comparar `append` y `extend` evita errores cuando trabajas con listas anidadas.
+:::
+
+## `del` · Eliminar por posición {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+`del` es una instrucción de Python, no un método. Elimina según índices o rangos.
+
+- `del frutas[1]` borra el segundo elemento.
+- `del frutas[0:2]` borra los dos primeros.
+- No devuelve el elemento eliminado.
+
+```python
+frutas = ["manzana", "cambur", "cereza", "fresa"]
+del frutas[1]
+print(frutas)
+```
+
+**Salida esperada**
+
+```text
+['manzana', 'cereza', 'fresa']
+```
+
+::: {.callout-tip title="Idea clave"}
+Usa `del` cuando NO necesitas guardar lo que borraste.
+:::
+
+## `pop()` · Eliminar y recuperar {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+`pop(indice)` quita el elemento indicado y lo devuelve. Sin índice quita el último.
+
+- Admite índices negativos.
+- En el Colab se usa `pop(-3)` y también `pop()`.
+- En una lista vacía produce `IndexError`.
+
+```python
+carros = ["Toyota", "Honda", "Ford"]
+eliminado = carros.pop()
+print(eliminado)
+print(carros)
+```
+
+**Salida esperada**
+
+```text
+Ford
+['Toyota', 'Honda']
+```
+
+::: {.callout-tip title="Idea clave"}
+`pop` es útil cuando vas a utilizar después el elemento retirado.
+:::
+
+## `remove()` vs. `clear()` {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+Son métodos diferentes, aunque aparecen juntos en el material de clase.
+
+- `remove(valor)` borra la primera coincidencia.
+- `clear()` borra TODOS los elementos.
+- `remove` lanza `ValueError` si el valor no existe.
+
+```python
+frutas = ["Mango", "kiwi", "cambur", "kiwi"]
+frutas.remove("kiwi")
+print(frutas)
+frutas.clear()
+print(frutas)
+```
+
+**Salida esperada**
+
+```text
+['Mango', 'cambur', 'kiwi']
+[]
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab el título dice «Método Remove», pero el ejemplo de esa celda ejecuta `clear()`. Aquí se distinguen ambos.
+:::
+
+## Otros métodos: `count`, `sort`, `reverse` {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+El Colab enumera estos métodos. Aquí tienes su efecto práctico.
+
+- `count(x)` cuenta coincidencias.
+- `sort()` ordena la lista en su lugar.
+- `reverse()` invierte el orden actual (no ordena).
+
+```python
+numeros = [3, 1, 3, 2]
+print(numeros.count(3))
+numeros.sort()
+print(numeros)
+numeros.reverse()
+print(numeros)
+```
+
+**Salida esperada**
+
+```text
+2
+[1, 2, 3, 3]
+[3, 3, 2, 1]
+```
+
+::: {.callout-tip title="Idea clave"}
+`sort()` y `reverse()` modifican la lista original y devuelven `None`.
+:::
+
+## Práctica 01 · Control de inventario {.scrollable}
+
+<span class="study-topic">Listas</span>
+
+Resuelve primero de memoria y descubre la respuesta cuando estés listo.
+
+**Ponte a prueba**
+
+Partiendo de `items = ["cuaderno", "lápiz"]`, añade "borrador"; elimina "lápiz" por valor y muestra cuántos elementos quedan.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+items = ["cuaderno", "lápiz"]
+items.append("borrador")
+items.remove("lápiz")
+print(len(items))  # 2
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Pista: necesitas `append()`, `remove()` y `len()`.
+:::
+
+# 02 / Tuplas
+
+Otra secuencia ordenada, pero inmutable.
+
+## Tuplas: datos que no se modifican {.scrollable}
+
+<span class="study-topic">Tuplas</span>
+
+Una tupla guarda valores en orden, permite indexarlos, pero no permite cambiar sus elementos directamente.
+
+- Suele escribirse con paréntesis `( )`.
+- También acepta valores mezclados.
+- La indexación positiva y negativa funciona como en listas.
+
+```python
+meses = ("Enero", "Febrero", "Marzo")
+print(meses[0])
+print(meses[-1])
+```
+
+**Salida esperada**
+
+```text
+Enero
+Marzo
+```
+
+::: {.callout-tip title="Idea clave"}
+Inmutable significa que `meses[0] = "Otro"` no está permitido.
+:::
+
+## Recorrer una tupla con `for` {.scrollable}
+
+<span class="study-topic">Tuplas</span>
+
+Un bucle `for` permite leer cada elemento de la secuencia, uno por uno.
+
+- `for mes in meses` toma cada mes en orden.
+- La variable `mes` cambia en cada iteración.
+
+```python
+meses = ("Enero", "Febrero", "Marzo")
+for mes in meses:
+    print(mes)
+```
+
+**Salida esperada**
+
+```text
+Enero
+Febrero
+Marzo
+```
+
+::: {.callout-tip title="Idea clave"}
+En clase recorrieron los doce meses; aquí usamos tres para que el patrón se vea mejor.
+:::
+
+## Lista o tupla: ¿cuál conviene? {.scrollable}
+
+<span class="study-topic">Tuplas</span>
+
+Las dos son secuencias: el criterio principal es si necesitas modificar la colección.
+
+- LISTA `[ ]`: nombres de alumnos que pueden agregarse o borrarse.
+- TUPLA `( )`: coordenadas fijas o meses del año.
+- Ambas tienen `len()`, índices, slicing y recorrido con `for`.
+
+```python
+lista = [10, 20]
+tupla = (10, 20)
+lista[0] = 99
+print(lista)
+print(tupla[0])
+```
+
+**Salida esperada**
+
+```text
+[99, 20]
+10
+```
+
+::: {.callout-tip title="Idea clave"}
+Una tupla no hace inmutables automáticamente los objetos mutables que pueda contener.
+:::
+
+# 03 / Diccionarios
+
+Datos organizados en pares clave–valor.
+
+## ¿Qué es un diccionario? {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Relaciona una **clave** con un **valor**. Para buscar no usas posiciones numéricas, sino la clave.
+
+- Se escribe como `{clave: valor}`.
+- Las claves deben ser hashables y son únicas dentro de un diccionario.
+- Puedes añadir, modificar y eliminar pares.
+
+```python
+persona = {"nombre": "Ana", "edad": 28}
+print(persona["nombre"])
+persona["edad"] = 29
+persona["profesion"] = "Derecho"
+print(persona)
+```
+
+**Salida esperada**
+
+```text
+Ana
+{'nombre': 'Ana', 'edad': 29, 'profesion': 'Derecho'}
+```
+
+::: {.callout-tip title="Idea clave"}
+Clave = cómo identifico el dato; valor = información que guardo.
+:::
+
+## `keys()` y `values()` {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Devuelven vistas de las claves o de los valores presentes.
+
+- `keys()` → recorrer los nombres de las claves.
+- `values()` → recorrer los datos almacenados.
+- No son listas: son objetos vista relacionados con el diccionario.
+
+```python
+persona = {"nombre": "Ana", "edad": 28}
+print(list(persona.keys()))
+print(list(persona.values()))
+```
+
+**Salida esperada**
+
+```text
+['nombre', 'edad']
+['Ana', 28]
+```
+
+::: {.callout-tip title="Idea clave"}
+Usamos `list()` para que la salida se lea con claridad.
+:::
+
+## Recorrer claves y valores {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+En el Colab se recorre el diccionario de contactos de tres maneras.
+
+- `for clave in contactos` recorre claves (igual que `.keys()`).
+- `for valor in contactos.values()` recorre valores.
+- La indentación señala el cuerpo del `for`.
+
+```python
+contactos = {"Juan": "+58", "Ana": "+507"}
+for nombre in contactos:
+    print(nombre)
+for telefono in contactos.values():
+    print(telefono)
+```
+
+**Salida esperada**
+
+```text
+Juan
+Ana
++58
++507
+```
+
+::: {.callout-tip title="Idea clave"}
+Cuando solo quieres las claves, escribir `.keys()` es opcional.
+:::
+
+## `items()` · Clave y valor a la vez {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+`items()` entrega pares de `(clave, valor)`. Puedes desempaquetarlos en dos variables.
+
+- Cada vuelta produce un par de datos.
+- `for clave, valor in ...` asigna ambos.
+
+```python
+contactos = {"Juan": "+58", "Ana": "+507"}
+for nombre, telefono in contactos.items():
+    print(nombre, "→", telefono)
+```
+
+**Salida esperada**
+
+```text
+Juan → +58
+Ana → +507
+```
+
+::: {.callout-tip title="Idea clave"}
+Este patrón es muy común cuando recorres registros o configuraciones.
+:::
+
+## `setdefault()` · Buscar o crear {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Si existe la clave, devuelve su valor actual. Si no existe, crea la clave con el valor predeterminado.
+
+- No sobrescribe una clave que ya existe.
+- Si omites el segundo argumento, el valor nuevo es `None`.
+- En el Colab, `Ana` ya tenía 66, así que sigue valiendo 66.
+
+```python
+puntos = {"Ana": 66, "Luis": 88}
+print(puntos.setdefault("Ana", 95))
+print(puntos.setdefault("Pedro", 0))
+print(puntos)
+```
+
+**Salida esperada**
+
+```text
+66
+0
+{'Ana': 66, 'Luis': 88, 'Pedro': 0}
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En la celda original se comenta que Ana devuelve 95, pero con el diccionario que aparece devuelve 66. Además, `setdefault("Pedro")` asigna `None`, no 0.
+:::
+
+## `get()` · Consulta sin `KeyError` {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Busca una clave sin fallar cuando no existe: devuelve `None` o un valor por defecto.
+
+- `dic[clave]` genera `KeyError` cuando falta la clave.
+- `dic.get(clave)` retorna `None`.
+- `dic.get(clave, defecto)` retorna el defecto indicado.
+
+```python
+persona = {"nombre": "Ana", "edad": 28}
+print(persona.get("nombre"))
+print(persona.get("ciudad"))
+print(persona.get("ciudad", "Sin registrar"))
+```
+
+**Salida esperada**
+
+```text
+Ana
+None
+Sin registrar
+```
+
+::: {.callout-tip title="Idea clave"}
+`get` consulta; `setdefault` puede modificar el diccionario.
+:::
+
+## `pop()` · Eliminar una clave {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Elimina el par solicitado y devuelve el valor asociado.
+
+- Es diferente del `pop()` de listas, que recibe índices.
+- Si la clave falta, puedes pasar un valor por defecto.
+
+```python
+persona = {"nombre": "Ana", "edad": 28}
+edad = persona.pop("edad")
+print(edad)
+print(persona)
+```
+
+**Salida esperada**
+
+```text
+28
+{'nombre': 'Ana'}
+```
+
+::: {.callout-tip title="Idea clave"}
+En diccionarios, `pop("edad")` usa una clave; en listas `pop(1)` usa posición.
+:::
+
+## `update()` y `clear()` {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Con `update` añades o reemplazas pares. Con `clear` vacías el diccionario.
+
+- `update` conserva claves que no se mencionan.
+- Cuando llega una clave existente, actualiza su valor.
+- `clear()` deja `{}`.
+
+```python
+persona = {"nombre": "Ana"}
+persona.update({"edad": 28, "ciudad": "Madrid"})
+print(persona)
+persona.clear()
+print(persona)
+```
+
+**Salida esperada**
+
+```text
+{'nombre': 'Ana', 'edad': 28, 'ciudad': 'Madrid'}
+{}
+```
+
+::: {.callout-tip title="Idea clave"}
+Las operaciones ocurren sobre el mismo diccionario.
+:::
+
+## Mapa mental de métodos {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Cuatro preguntas que ayudan a decidir qué método utilizar.
+
+- ¿Quiero leer sin error? → `get`.
+- ¿Quiero crear si falta? → `setdefault`.
+- ¿Quiero fusionar cambios? → `update`.
+- ¿Quiero eliminar? → `pop` o `clear`.
+
+```python
+registro = {"usuario": "Ana"}
+registro.setdefault("activo", True)
+registro.update({"visitas": 3})
+print(registro.get("visitas"))
+```
+
+**Salida esperada**
+
+```text
+3
+```
+
+::: {.callout-tip title="Idea clave"}
+No memorices solo los nombres: recuerda el problema que resuelve cada método.
+:::
+
+## Práctica 02 · Contactos {.scrollable}
+
+<span class="study-topic">Diccionarios</span>
+
+Comprueba si entiendes claves, valores y actualización de datos.
+
+**Ponte a prueba**
+
+Crea `contactos` con Ana → 507 y Luis → 600. Añade Pedro → 612 usando una clave nueva. Recorre e imprime `"Ana: 507"`, etc.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+contactos = {"Ana": 507, "Luis": 600}
+contactos["Pedro"] = 612
+for nombre, telefono in contactos.items():
+    print(f"{nombre}: {telefono}")
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Pista: `.items()` da cada par clave/valor.
+:::
+
+# 04 / JSON
+
+Datos que viajan entre programas y archivos.
+
+## JSON no es un diccionario Python {.scrollable}
+
+<span class="study-topic">JSON</span>
+
+JSON es un formato de texto estándar para representar datos; se parece a un diccionario, pero no es lo mismo.
+
+- JSON: `{"nombre": "Ana"}` es texto con reglas concretas.
+- Python: `{"nombre": "Ana"}` puede ser un objeto `dict`.
+- En JSON se usan `true`, `false` y `null`; en Python `True`, `False`, `None`.
+
+```python
+import json
+texto = '{"nombre": "Ana", "activo": true}'
+datos = json.loads(texto)
+print(type(datos).__name__)
+print(datos["activo"])
+```
+
+**Salida esperada**
+
+```text
+dict
+True
+```
+
+::: {.callout-tip title="Idea clave"}
+`json.loads()` convierte texto JSON a tipos de Python.
+:::
+
+## `loads()` → de JSON a Python {.scrollable}
+
+<span class="study-topic">JSON</span>
+
+La **s** de `loads` recuerda que trabajas con una cadena (`str`).
+
+- Entrada: texto JSON válido.
+- Salida: `dict`, `list` u otro tipo Python, según el JSON.
+
+```python
+import json
+cadena = '{"nombre": "Ana", "edad": 28}'
+persona = json.loads(cadena)
+print(persona["nombre"])
+```
+
+**Salida esperada**
+
+```text
+Ana
+```
+
+::: {.callout-tip title="Idea clave"}
+No confundas `json.loads` (cadena) con `json.load` (archivo).
+:::
+
+## `dumps()` → de Python a JSON {.scrollable}
+
+<span class="study-topic">JSON</span>
+
+Convierte valores Python en una cadena con formato JSON.
+
+- La salida de `dumps` es un `str`.
+- Una lista o un diccionario puede convertirse.
+- Con `ensure_ascii=False` puedes conservar caracteres como ñ y acentos.
+
+```python
+import json
+datos = {"ciudad": ["Madrid", "París"], "activo": True}
+texto = json.dumps(datos, ensure_ascii=False)
+print(texto)
+```
+
+**Salida esperada**
+
+```text
+{"ciudad": ["Madrid", "París"], "activo": true}
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab, un comentario sobre la salida omite que `ciudad` es una lista; aquí se muestra la cadena JSON real.
+:::
+
+## JSON y listas {.scrollable}
+
+<span class="study-topic">JSON</span>
+
+En los cuadernos convierten una lista de frutas a JSON y viceversa.
+
+- `loads` puede devolver una lista, no siempre un diccionario.
+- `dumps` convierte la lista en texto JSON.
+
+```python
+import json
+texto = '["manzana", "banana", "cereza"]'
+frutas = json.loads(texto)
+print(type(frutas).__name__)
+print(json.dumps(frutas))
+```
+
+**Salida esperada**
+
+```text
+list
+["manzana", "banana", "cereza"]
+```
+
+::: {.callout-tip title="Idea clave"}
+Regla: cargas JSON hacia objetos Python; vuelcas objetos Python hacia JSON.
+:::
+
+## `load()` y `dump()` · Archivos {.scrollable}
+
+<span class="study-topic">JSON</span>
+
+Estos métodos trabajan con un archivo abierto, no directamente con una cadena.
+
+- `json.dump(datos, archivo)` escribe JSON.
+- `json.load(archivo)` lee y convierte el contenido.
+- `with open(...)` cierra el archivo automáticamente.
+
+```python
+import json
+datos = {"nombre": "Ana"}
+with open("data.json", "w", encoding="utf-8") as f:
+    json.dump(datos, f)
+with open("data.json", "r", encoding="utf-8") as f:
+    recuperado = json.load(f)
+print(recuperado)
+```
+
+**Salida esperada**
+
+```text
+{'nombre': 'Ana'}
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+El Colab original solo lee `data.json`. Ese ejemplo requiere que exista antes; aquí se crea y después se lee.
+:::
+
+## Práctica 03 · Guardar una lista {.scrollable}
+
+<span class="study-topic">JSON</span>
+
+Piensa en cómo almacenar temporalmente los datos para utilizarlos después.
+
+**Ponte a prueba**
+
+Convierte `["rojo", "verde", "azul"]` a JSON; recupera el texto convertido y comprueba que vuelves a tener una lista.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+import json
+colores = ["rojo", "verde", "azul"]
+texto = json.dumps(colores)
+resultado = json.loads(texto)
+print(type(resultado).__name__)
+print(resultado)
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Pista: `dumps` primero, `loads` después.
+:::
+
+# 05 / Conjuntos
+
+Elementos únicos, sin una posición fija.
+
+## ¿Qué es un `set`? {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Un conjunto almacena elementos únicos; el orden al imprimirlos no es una garantía.
+
+- Se escribe como `{1, 2, 3}` o `set(iterable)`.
+- No puedes acceder con `conjunto[0]`.
+- Para un conjunto vacío usa `set()`; `{}` crea un diccionario.
+
+```python
+colores = {"rojo", "verde", "azul"}
+print(len(colores))
+vacio = set()
+print(type(vacio).__name__)
+```
+
+**Salida esperada**
+
+```text
+3
+set
+```
+
+::: {.callout-tip title="Idea clave"}
+Un `set` es útil para pertenencia, unicidad y operaciones de conjuntos.
+:::
+
+## `add()` y `remove()` {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Agregar y eliminar elementos únicos.
+
+- `add(x)` no duplica `x` si ya estaba.
+- `remove(x)` elimina ese elemento o produce `KeyError`.
+- Si quieres evitar ese error al borrar, usa `discard(x)` (refuerzo).
+
+```python
+carros = {"Toyota", "Honda", "Ford"}
+carros.add("Chevrolet")
+carros.remove("Toyota")
+print("Toyota" in carros)
+print("Ford" in carros)
+```
+
+**Salida esperada**
+
+```text
+False
+True
+```
+
+::: {.callout-tip title="Idea clave"}
+`in` verifica pertenencia a un conjunto; es también válido para listas y tuplas.
+:::
+
+## Eliminar duplicados con `set()` {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Convertir una lista a conjunto conserva solo elementos distintos.
+
+- Muy útil para números, nombres o identificadores repetidos.
+- No conserva necesariamente el orden original.
+
+```python
+numeros = [1, 2, 2, 3, 4, 4, 5]
+unicos = set(numeros)
+print(len(unicos))
+print(4 in unicos)
+```
+
+**Salida esperada**
+
+```text
+5
+True
+```
+
+::: {.callout-tip title="Idea clave"}
+No confíes en un orden concreto al imprimir el conjunto.
+:::
+
+## Unión `|` · Todo lo que está en A o B {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+La unión reúne todos los elementos, sin repetir los compartidos.
+
+- Método `A.union(B)`.
+- Operador equivalente: `A | B`.
+
+```python
+A = {"perro", "gato", "loro"}
+B = {"gato", "conejo", "serpiente"}
+union = A | B
+print(len(union))
+print("gato" in union)
+```
+
+**Salida esperada**
+
+```text
+5
+True
+```
+
+::: {.callout-tip title="Idea clave"}
+La unión contiene 5 animales distintos; `gato` aparece una sola vez.
+:::
+
+## Intersección `&` · Lo que comparten {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+La intersección guarda únicamente los elementos presentes en ambos conjuntos.
+
+- Método `A.intersection(B)`.
+- Operador equivalente: `A & B`.
+
+```python
+A = {"perro", "gato", "loro"}
+B = {"gato", "conejo", "serpiente"}
+print(A & B)
+```
+
+**Salida esperada**
+
+```text
+{'gato'}
+```
+
+::: {.callout-tip title="Idea clave"}
+Piensa en alumnos que están inscritos en dos cursos a la vez.
+:::
+
+## Diferencia `-` · Lo que queda de A {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+`A - B` contiene los elementos que están en A, pero NO en B.
+
+- Método `A.difference(B)`.
+- El orden importa: `A - B` no suele ser igual a `B - A`.
+
+```python
+A = {"perro", "gato", "loro"}
+B = {"gato", "conejo", "serpiente"}
+print(A - B == {"perro", "loro"})
+print(B - A == {"conejo", "serpiente"})
+```
+
+**Salida esperada**
+
+```text
+True
+True
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab se calcula `B.difference(A)` pero el texto impreso dice «Diferencia A - B». Aquí se corrige la dirección.
+:::
+
+## Práctica 04 · Dos grupos {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Calcula unión, intersección y diferencia sin ejecutar el código.
+
+**Ponte a prueba**
+
+Para `A={1,2,3,4}` y `B={3,4,5}`, ¿qué obtienes con `A|B`, `A&B` y `A-B`?
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+A = {1, 2, 3, 4}
+B = {3, 4, 5}
+print(A | B)  # {1, 2, 3, 4, 5}
+print(A & B)  # {3, 4}
+print(A - B)  # {1, 2}
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+El orden visual de los conjuntos puede cambiar; el contenido es lo importante.
+:::
+
+# 06 / Cierre
+
+Unifica todo lo aprendido.
+
+## Cuatro estructuras, cuatro propósitos {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+Repaso comparativo para elegir rápidamente la estructura adecuada.
+
+- `list` → secuencia ordenada y modificable; admite repetidos.
+- `tuple` → secuencia ordenada que no modificas directamente.
+- `dict` → asocia claves únicas con valores.
+- `set` → colección de valores únicos, sin índice.
+
+```python
+lista = ["Ana", "Ana"]
+tupla = ("Ana", "Luis")
+diccionario = {"Ana": 95}
+conjunto = {"Ana", "Ana"}
+print(len(lista), len(tupla), len(diccionario), len(conjunto))
+```
+
+**Salida esperada**
+
+```text
+2 2 1 1
+```
+
+::: {.callout-tip title="Idea clave"}
+JSON es un formato para representar o intercambiar datos; no es otra de las cuatro estructuras.
+:::
+
+## Errores que vale la pena detectar {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+Lecciones obtenidas al revisar las celdas originales.
+
+- `remove()` ≠ `clear()`: uno borra un valor, otro toda la colección.
+- `setdefault("Ana", 95)` no modifica 66 si la clave ya existe.
+- `json.dumps()` devuelve texto; `json.loads()` convierte texto a Python.
+- `B.difference(A)` significa B menos A.
+
+::: {.callout-tip title="Idea clave"}
+Detectar una inconsistencia en el material es parte de aprender a programar.
+:::
+
+## Reto integrador · Alumnos y JSON {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+Une listas, sets, diccionarios y JSON con un caso real.
+
+**Ponte a prueba**
+
+Tienes `asistentes=["Ana","Luis","Ana","Pedro"]`. Crea un conjunto sin duplicados, haz un diccionario con la cantidad de personas únicas y conviértelo a texto JSON.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+import json
+asistentes = ["Ana", "Luis", "Ana", "Pedro"]
+unicos = set(asistentes)
+resumen = {"total_unicos": len(unicos)}
+print(json.dumps(resumen))  # {"total_unicos": 3}
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+El objetivo es combinar ideas, no escribir muchas líneas.
+:::
+
+## Ficha de repaso · Clase 1 {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+Antes de dar esta clase por dominada, deberías poder explicar estas decisiones.
+
+- ¿Cuándo usarías `append` en vez de `extend`?
+- ¿Qué diferencia hay entre `get` y `setdefault`?
+- ¿Cómo conviertes un diccionario a JSON?
+- ¿Por qué un `set` no admite `[0]`?
+
+::: {.callout-tip title="Idea clave"}
+Si puedes contestar las cuatro sin mirar, ya tienes una buena base.
+:::
+

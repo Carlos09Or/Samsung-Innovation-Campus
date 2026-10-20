@@ -1,0 +1,12 @@
+/* Estilo de las presentaciones Quarto (revealjs) */
+.reveal { font-family: "Inter", "Aptos", "Lato", sans-serif; }
+.reveal h1,.reveal h2 { color:#f7f9fe; font-weight:790; text-transform:none; letter-spacing:-.025em; }
+.reveal h2 { font-size:1.38em; }
+.reveal p,.reveal li { line-height:1.35; }
+.reveal .slide-background { background: radial-gradient(circle at 80% 0%,#21365e 0%,#101a2c 48%,#0a1220 100%); }
+.reveal .slides section { text-align:left; }
+.reveal pre { border:1px solid #394862; border-radius:13px; box-shadow:none; }
+.reveal pre code { max-height:360px; font-size:.85em; line-height:1.3; }
+.reveal .callout { font-size:.7em; }
+.reveal .study-topic { display:inline-block; color:#83c5ff; letter-spacing:.1em; text-transform:uppercase; font-size:.52em; font-weight:700; }
+.reveal .progress { color:#80dcca; height:5px; }

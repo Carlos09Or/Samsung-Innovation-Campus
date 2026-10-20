@@ -1,0 +1,912 @@
+---
+title: "Clase 2 — Módulos y matrices"
+subtitle: "Samsung Innovation Campus · Capítulo 2"
+lang: es
+format:
+  revealjs:
+    theme: night
+    transition: fade
+    navigation-mode: linear
+    slide-number: c/t
+    progress: true
+    controls: true
+    code-copy: true
+    smaller: true
+    scrollable: true
+    css: assets/quarto.css
+execute:
+  eval: false
+---
+
+## Ruta original de la clase · 60 minutos {.scrollable}
+
+<span class="study-topic">Inicio</span>
+
+Seguimos los cinco bloques de la práctica.
+
+- 00–15 min: métodos de diccionarios.
+- 15–25 min: `defaultdict`, `datetime` y `math`.
+- 25–40 min: operaciones con conjuntos.
+- 40–55 min: listas bidimensionales.
+- 55–60 min: reto del buscador de tesoros.
+
+::: {.callout-tip title="Idea clave"}
+Esta secuencia reproduce los bloques del cuaderno de clase.
+:::
+
+# 01 / Diccionarios avanzados
+
+Manipular datos sin perder información.
+
+## `setdefault()` para inventarios {.scrollable}
+
+<span class="study-topic">Diccionarios avanzados</span>
+
+En un inventario, puedes obtener una cantidad existente o crear un producto que todavía no aparece.
+
+- Si ya existe, conserva el stock actual.
+- Si falta, inserta el stock inicial que indiques.
+
+```python
+inventario = {"manzanas": 10, "peras": 5}
+print(inventario.setdefault("manzanas", 0))
+print(inventario.setdefault("naranjas", 0))
+print(inventario["naranjas"])
+```
+
+**Salida esperada**
+
+```text
+10
+0
+0
+```
+
+::: {.callout-tip title="Idea clave"}
+No confundas `setdefault` con `update`: uno solo crea si no existe; el otro también reemplaza.
+:::
+
+## `update()` para precios {.scrollable}
+
+<span class="study-topic">Diccionarios avanzados</span>
+
+Actualiza varias claves existentes y añade otras en una sola llamada.
+
+- `cafe` y `pan` se actualizan.
+- `jugo` se agrega porque es nuevo.
+- `te` se conserva sin cambios.
+
+```python
+precios = {"cafe": 3.50, "te": 2.00, "pan": 1.00}
+precios.update({"cafe": 4.00, "pan": 1.20, "jugo": 3.00})
+print(precios["cafe"])
+print(precios["jugo"])
+```
+
+**Salida esperada**
+
+```text
+4.0
+3.0
+```
+
+::: {.callout-tip title="Idea clave"}
+Este ejemplo corresponde al bloque de actualización de precios de la Clase 2.
+:::
+
+## `pop()` frente a `popitem()` {.scrollable}
+
+<span class="study-topic">Diccionarios avanzados</span>
+
+Ambos devuelven lo eliminado, pero seleccionan el elemento de forma diferente.
+
+- `pop("rol")` quita la clave solicitada.
+- `popitem()` quita el último par insertado (Python 3.7+).
+- En diccionario vacío, `popitem()` produce `KeyError`.
+
+```python
+usuario = {"id": 1024, "nombre": "Sofía", "rol": "Editor", "activo": True}
+print(usuario.pop("rol"))
+print(usuario.popitem())
+```
+
+**Salida esperada**
+
+```text
+Editor
+('activo', True)
+```
+
+::: {.callout-tip title="Idea clave"}
+Recuerda que `popitem()` devuelve una tupla `(clave, valor)`.
+:::
+
+## ¿Cómo evitar errores al retirar claves? {.scrollable}
+
+<span class="study-topic">Diccionarios avanzados</span>
+
+Puedes dar a `pop()` un valor por defecto cuando no existe la clave.
+
+- `pop(clave)` sin defecto lanza `KeyError` si falta.
+- `pop(clave, defecto)` devuelve el defecto en ese caso.
+
+```python
+usuario = {"nombre": "Sofía"}
+rol = usuario.pop("rol", "Sin rol")
+print(rol)
+print(usuario)
+```
+
+**Salida esperada**
+
+```text
+Sin rol
+{'nombre': 'Sofía'}
+```
+
+::: {.callout-tip title="Idea clave"}
+Este es un refuerzo útil de la idea de «eliminación segura» mencionada en el Colab.
+:::
+
+## Práctica 01 · Gestión de usuario {.scrollable}
+
+<span class="study-topic">Diccionarios avanzados</span>
+
+Comprueba si distingues actualizar, crear y eliminar.
+
+**Ponte a prueba**
+
+En `u={"nombre":"Ana","visitas":2}` aumenta las visitas a 3, agrega `"activo":True` solo si falta y elimina `"edad"` sin lanzar error.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+u = {"nombre": "Ana", "visitas": 2}
+u.update({"visitas": 3})
+u.setdefault("activo", True)
+u.pop("edad", None)
+print(u)
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Combina tres métodos del bloque sin utilizar un `if`.
+:::
+
+# 02 / Módulos y defaultdict
+
+Reutilizar herramientas que Python ya incluye.
+
+## ¿Qué es un módulo? {.scrollable}
+
+<span class="study-topic">Módulos</span>
+
+Un módulo es un archivo o biblioteca de Python que ofrece funciones, objetos y herramientas reutilizables.
+
+- `import math` importa el módulo completo.
+- `import math as m` crea un alias.
+- `from collections import defaultdict` importa un objeto concreto.
+
+```python
+import math as m
+from collections import defaultdict
+print(m.sqrt(81))
+print(type(defaultdict(int)).__name__)
+```
+
+**Salida esperada**
+
+```text
+9.0
+defaultdict
+```
+
+::: {.callout-tip title="Idea clave"}
+`as` no cambia el módulo: solo te permite escribir un nombre más corto.
+:::
+
+## `defaultdict(int)` · Contar letras {.scrollable}
+
+<span class="study-topic">Módulos</span>
+
+`defaultdict` crea automáticamente el valor inicial cuando accedes a una clave inexistente.
+
+- Con `int`, el valor inicial es 0.
+- Puedes incrementar `conteo[letra]` sin comprobar antes si existe.
+
+```python
+from collections import defaultdict
+conteo = defaultdict(int)
+for letra in "Banana":
+    conteo[letra] += 1
+print(dict(conteo))
+```
+
+**Salida esperada**
+
+```text
+{'B': 1, 'a': 3, 'n': 2}
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+El Colab comenta una salida con `b` minúscula para el texto «Banana». Python distingue mayúsculas: la clave correcta es `B`.
+:::
+
+## `defaultdict(list)` · Agrupar frutas {.scrollable}
+
+<span class="study-topic">Módulos</span>
+
+Con `list`, cada clave nueva recibe una lista vacía que puedes llenar.
+
+- Un patrón útil para agrupar registros por categoría.
+- Se combina con `.append()` del tema de listas.
+
+```python
+from collections import defaultdict
+pares = [("rojo", "manzana"), ("amarillo", "plátano"),
+         ("rojo", "fresa")]
+agrupados = defaultdict(list)
+for color, fruta in pares:
+    agrupados[color].append(fruta)
+print(dict(agrupados))
+```
+
+**Salida esperada**
+
+```text
+{'rojo': ['manzana', 'fresa'], 'amarillo': ['plátano']}
+```
+
+::: {.callout-tip title="Idea clave"}
+La elección `int` o `list` determina qué dato se crea automáticamente.
+:::
+
+## `datetime` · Fechas y diferencias {.scrollable}
+
+<span class="study-topic">Módulos</span>
+
+El módulo `datetime` permite crear fechas y restarlas para calcular intervalos.
+
+- `date(año, mes, día)` representa una fecha.
+- `date.today()` usa la fecha de ejecución.
+- La resta de dos fechas devuelve `timedelta`, que tiene `.days`.
+
+```python
+import datetime as dt
+inicio = dt.date(2026, 1, 1)
+fin = dt.date(2026, 1, 11)
+print((fin - inicio).days)
+```
+
+**Salida esperada**
+
+```text
+10
+```
+
+::: {.callout-tip title="Idea clave"}
+En el Colab calculan los días desde una fecha de nacimiento; la respuesta cambia cada día.
+:::
+
+## `math.hypot()` · Pitágoras {.scrollable}
+
+<span class="study-topic">Módulos</span>
+
+Calcula la longitud de la hipotenusa a partir de los dos catetos.
+
+- Para un triángulo rectángulo: `c = √(a²+b²)`.
+- Con catetos 3 y 4, la hipotenusa mide 5.
+
+```python
+import math as m
+cateto_a = 3
+cateto_b = 4
+print(m.hypot(cateto_a, cateto_b))
+```
+
+**Salida esperada**
+
+```text
+5.0
+```
+
+::: {.callout-tip title="Idea clave"}
+`math.hypot()` te evita escribir manualmente el cálculo de la raíz.
+:::
+
+## `ceil`, `floor` y `pow` {.scrollable}
+
+<span class="study-topic">Módulos</span>
+
+Funciones matemáticas del módulo `math` que aparecen en clase.
+
+- `ceil(7.01)` redondea hacia arriba al entero siguiente.
+- `floor(7.01)` redondea hacia abajo.
+- `math.pow(2, 3)` calcula la potencia como `float`.
+
+```python
+import math as m
+print(m.ceil(7.01))
+print(m.floor(7.01))
+print(m.pow(2, 3))
+```
+
+**Salida esperada**
+
+```text
+8
+7
+8.0
+```
+
+::: {.callout-tip title="Idea clave"}
+`math.floor` y `//` están relacionados con redondear hacia abajo, pero no son la misma operación.
+:::
+
+## Práctica 02 · Conteo automático {.scrollable}
+
+<span class="study-topic">Módulos</span>
+
+Cambia el texto de entrada y predice el resultado.
+
+**Ponte a prueba**
+
+Usa `defaultdict(int)` para contar las letras del texto `"coco"`. ¿Cuánto valen las claves `c` y `o`?
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+from collections import defaultdict
+conteo = defaultdict(int)
+for letra in "coco":
+    conteo[letra] += 1
+print(dict(conteo))  # {'c': 2, 'o': 2}
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+La clave nueva inicia en 0 y luego se incrementa.
+:::
+
+# 03 / Conjuntos en acción
+
+Comparar grupos y deduplicar información.
+
+## De una lista repetida a participantes únicos {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Los conjuntos guardan una sola aparición de cada valor.
+
+- En el Colab se limpian listas de asistentes.
+- No uses índices numéricos ni des por hecho el orden de impresión.
+
+```python
+asistentes = ["Ana", "Carlos", "Ana", "Sofia", "Carlos", "David"]
+unicos = set(asistentes)
+print(len(asistentes))
+print(len(unicos))
+```
+
+**Salida esperada**
+
+```text
+6
+4
+```
+
+::: {.callout-tip title="Idea clave"}
+La conversión no altera la lista original.
+:::
+
+## Unión `|` · Grupos de mañana y tarde {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Reúne alumnos inscritos en al menos uno de los dos grupos.
+
+- Evita duplicados como Sofía que aparece en ambos.
+- `|` es equivalente a `.union()`.
+
+```python
+manana = {"Ana", "Carlos", "Sofia"}
+tarde = {"Sofia", "David", "Elena"}
+todos = manana | tarde
+print(len(todos))
+```
+
+**Salida esperada**
+
+```text
+5
+```
+
+::: {.callout-tip title="Idea clave"}
+La unión corresponde a una condición inclusiva: A o B (o ambos).
+:::
+
+## Intersección `&` · Dos cursos {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Encuentra alumnos matriculados simultáneamente en Python e IA.
+
+- `&` selecciona solo lo que comparten.
+- `.intersection()` obtiene el mismo resultado.
+
+```python
+python = {"Ana", "Erick", "David", "Elena"}
+ia = {"David", "Elena", "Jhoandry", "Gabriela"}
+print((python & ia) == {"David", "Elena"})
+```
+
+**Salida esperada**
+
+```text
+True
+```
+
+::: {.callout-tip title="Idea clave"}
+Este es el caso de estudiantes en ambos cursos del material original.
+:::
+
+## Diferencia `-` · Un equipo sin el otro {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Qué personas están en el grupo rojo, pero no en el azul.
+
+- La diferencia depende de cuál conjunto va primero.
+- `A - B` no significa «los que son distintos en ambos».
+
+```python
+rojo = {"Ana", "Carlos", "Sofia"}
+azul = {"Sofia", "David", "Elena"}
+print(rojo - azul == {"Ana", "Carlos"})
+```
+
+**Salida esperada**
+
+```text
+True
+```
+
+::: {.callout-tip title="Idea clave"}
+Para los exclusivos de AMBOS grupos necesitas diferencia simétrica.
+:::
+
+## Diferencia simétrica `^` {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Recoge los miembros que pertenecen a un conjunto o al otro, pero no a ambos.
+
+- `A ^ B` elimina los elementos compartidos.
+- También se llama `.symmetric_difference()`.
+
+```python
+rojo = {"Ana", "Carlos", "Sofia"}
+azul = {"Sofia", "David", "Elena"}
+solo_un_grupo = rojo ^ azul
+print(len(solo_un_grupo))
+print("Sofia" in solo_un_grupo)
+```
+
+**Salida esperada**
+
+```text
+4
+False
+```
+
+::: {.callout-tip title="Idea clave"}
+Diferencia `-`: solo A. Diferencia simétrica `^`: exclusivos de A y B.
+:::
+
+## Tabla mental · Operadores de conjuntos {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Asocia cada símbolo con una pregunta concreta.
+
+- `A | B` → ¿quién está en alguno de los dos?
+- `A & B` → ¿quién aparece en ambos?
+- `A - B` → ¿quién está solo en A?
+- `A ^ B` → ¿quién aparece en uno de los dos pero no en ambos?
+
+```python
+A = {1, 2, 3}
+B = {3, 4}
+print(len(A | B), len(A & B), len(A - B), len(A ^ B))
+```
+
+**Salida esperada**
+
+```text
+4 1 2 3
+```
+
+::: {.callout-tip title="Idea clave"}
+La diferencia simétrica se añade explícitamente en la Clase 2.
+:::
+
+## Práctica 03 · Talleres {.scrollable}
+
+<span class="study-topic">Conjuntos</span>
+
+Resuelve una pregunta típica de inscripciones.
+
+**Ponte a prueba**
+
+`python={"Ana","Pedro","Luis"}` e `ia={"Ana","Sara"}`. ¿Qué operación da los alumnos exclusivos de un solo taller? ¿Cuántos son?
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+python = {"Ana", "Pedro", "Luis"}
+ia = {"Ana", "Sara"}
+exclusivos = python ^ ia
+print(len(exclusivos))  # 3
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+La intersección no sirve: elimina las personas que no se comparten.
+:::
+
+# 04 / Matrices con listas
+
+Filas, columnas y dos niveles de índices.
+
+## Lista bidimensional: la idea {.scrollable}
+
+<span class="study-topic">Matrices</span>
+
+Una matriz representada con listas es una lista cuyos elementos también son listas.
+
+- La lista exterior contiene filas.
+- Cada lista interior contiene las columnas de esa fila.
+- No es un tipo de dato nuevo: es una estructura anidada.
+
+```python
+matriz = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+print(len(matriz))
+```
+
+**Salida esperada**
+
+```text
+3
+```
+
+::: {.callout-tip title="Idea clave"}
+El ejemplo 3×3 aparece en las celdas de listas bidimensionales.
+:::
+
+## `matriz[fila][columna]` {.scrollable}
+
+<span class="study-topic">Matrices</span>
+
+Cada par de corchetes selecciona un nivel: primero la fila, luego la posición dentro de ella.
+
+- `matriz[1]` es toda la segunda fila.
+- `matriz[1][2]` es el tercer elemento de esa fila.
+- Los dos índices empiezan en cero.
+
+```python
+matriz = [[10, 20, 30], [40, 50, 60], [70, 80, 90]]
+print(matriz[1])
+print(matriz[1][2])
+```
+
+**Salida esperada**
+
+```text
+[40, 50, 60]
+60
+```
+
+::: {.callout-tip title="Idea clave"}
+No confundas fila 1 con primera fila: en Python es la segunda.
+:::
+
+## `for` anidados · Recorrer cada celda {.scrollable}
+
+<span class="study-topic">Matrices</span>
+
+El bucle externo recorre las filas; el interno recorre los valores de la fila.
+
+- Cada iteración del `for` externo entrega una lista.
+- Cada iteración del interno entrega un elemento de esa lista.
+
+```python
+matriz = [[1, 2], [3, 4]]
+for fila in matriz:
+    for numero in fila:
+        print(numero, end=" ")
+    print()
+```
+
+**Salida esperada**
+
+```text
+1 2 
+3 4
+```
+
+::: {.callout-tip title="Idea clave"}
+La última instrucción `print()` cambia de línea al finalizar una fila.
+:::
+
+## Modificar una celda {.scrollable}
+
+<span class="study-topic">Matrices</span>
+
+Una lista bidimensional puede modificarse usando ambos índices.
+
+- `matriz[0][0] = 999` reemplaza la primera casilla.
+- El resto de la estructura no cambia.
+
+```python
+matriz = [[10, 20, 30], [40, 50, 60]]
+matriz[0][0] = 999
+print(matriz[0])
+```
+
+**Salida esperada**
+
+```text
+[999, 20, 30]
+```
+
+::: {.callout-tip title="Idea clave"}
+Una matriz de listas puede tener filas de diferente longitud; no necesariamente es rectangular.
+:::
+
+## Tic-tac-toe · Un tablero como matriz {.scrollable}
+
+<span class="study-topic">Matrices</span>
+
+Una cuadrícula de juego también puede modelarse con listas anidadas.
+
+- Cada fila contiene tres casillas.
+- `tablero[1][1]` marca la casilla central.
+- La segunda asignación a una casilla reemplaza la anterior.
+
+```python
+tablero = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
+tablero[1][1] = "X"
+print(tablero[1])
+```
+
+**Salida esperada**
+
+```text
+[' ', 'X', ' ']
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab se indica en un comentario la posición (1, 0), pero el código modifica (1, 1). Además, otra demostración vuelve a escribir en la misma casilla.
+:::
+
+## Tic-tac-toe · ¿Qué pasa si sobrescribes? {.scrollable}
+
+<span class="study-topic">Matrices</span>
+
+Un valor nuevo asignado a una misma casilla reemplaza al anterior.
+
+- Una lista no recuerda el valor anterior de esa posición.
+- Para evitar jugadas ilegales habría que comprobar si la casilla está vacía (refuerzo).
+
+```python
+tablero = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
+tablero[0][2] = "X"
+tablero[0][2] = "O"
+print(tablero[0][2])
+```
+
+**Salida esperada**
+
+```text
+O
+```
+
+::: {.callout-tip title="Idea clave"}
+Esta observación sale del segundo ejemplo del juego en el Colab.
+:::
+
+## Práctica 04 · Encuentra la casilla {.scrollable}
+
+<span class="study-topic">Matrices</span>
+
+Practica el orden de los dos índices.
+
+**Ponte a prueba**
+
+En `m=[["a","b"],["c","d"]]`, ¿qué imprime `m[1][0]`? Cambia después la casilla `"b"` por `"X"`.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+m = [["a", "b"], ["c", "d"]]
+print(m[1][0])  # c
+m[0][1] = "X"
+print(m)  # [['a', 'X'], ['c', 'd']]
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Primero piensa en la fila; después, en la columna.
+:::
+
+# 05 / Reto final
+
+Combinar matrices, bucles y conjuntos.
+
+## El buscador de tesoros únicos {.scrollable}
+
+<span class="study-topic">Reto final</span>
+
+El Colab propone una matriz con premios repetidos: debes encontrar qué premios distintos aparecen.
+
+- Entrada: lista de listas con premios.
+- Proceso: recorrer filas y agregar valores a un `set`.
+- Salida: conjunto de premios únicos.
+
+```python
+tablero = [
+    ["oro", "plata", "oro"],
+    ["bronce", "diamante", "plata"],
+    ["oro", "bronce", "diamante"]
+]
+```
+
+::: {.callout-tip title="Idea clave"}
+Antes de ver la solución, piensa cuántos premios únicos hay.
+:::
+
+## Primero, diseña el algoritmo {.scrollable}
+
+<span class="study-topic">Reto final</span>
+
+Traducimos la consigna a pasos claros antes de programarla.
+
+- 1. Crear un `set()` vacío.
+- 2. Recorrer cada fila de la matriz.
+- 3. Recorrer cada premio de la fila.
+- 4. Añadirlo al conjunto con `.add()`.
+- 5. Mostrar el resultado.
+
+**Ponte a prueba**
+
+¿Por qué usamos `set` y no `list` para guardar los premios encontrados?
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```python
+# Un set ignora duplicados automáticamente.
+unicos = set()
+for premio in ["oro", "oro", "plata"]:
+    unicos.add(premio)
+print(len(unicos))  # 2
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Pensar la estructura de datos adecuada simplifica el programa.
+:::
+
+## Solución · Buscar premios únicos {.scrollable}
+
+<span class="study-topic">Reto final</span>
+
+Esencialmente la misma estrategia de la respuesta que aparece en el Colab.
+
+- Bucle externo → filas.
+- Bucle interno → premios.
+- `set.add()` garantiza unicidad.
+
+```python
+tablero = [["oro", "plata", "oro"],
+           ["bronce", "diamante", "plata"],
+           ["oro", "bronce", "diamante"]]
+premios_unicos = set()
+for fila in tablero:
+    for premio in fila:
+        premios_unicos.add(premio)
+print(len(premios_unicos))
+```
+
+**Salida esperada**
+
+```text
+4
+```
+
+::: {.callout-tip title="Idea clave"}
+Los cuatro tipos son oro, plata, bronce y diamante; el orden al imprimir un `set` varía.
+:::
+
+## Extensión · ¿Cuántas veces aparece cada premio? {.scrollable}
+
+<span class="study-topic">Reto final</span>
+
+Refuerzo opcional: al cambiar la estructura de datos, cambia la pregunta que puedes responder.
+
+- Con `set` sabes qué premios existen.
+- Con `defaultdict(int)` sabes cuántas veces aparece cada premio.
+
+```python
+from collections import defaultdict
+tablero = [["oro", "plata"], ["oro", "bronce"]]
+conteo = defaultdict(int)
+for fila in tablero:
+    for premio in fila:
+        conteo[premio] += 1
+print(dict(conteo))
+```
+
+**Salida esperada**
+
+```text
+{'oro': 2, 'plata': 1, 'bronce': 1}
+```
+
+::: {.callout-tip title="Idea clave"}
+Este ejemplo adicional conecta los dos grandes bloques de la Clase 2.
+:::
+
+## Errores y detalles detectados en el Colab {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+No basta con copiar el código: hay que comprobar lo que realmente hace.
+
+- `"Banana"` comienza con `B` mayúscula, no `b`.
+- `tablero[1][1]` modifica la casilla central, no `[1][0]`.
+- `popitem()` selecciona el último par insertado.
+- El resultado de `date.today()` cambia según el día en que ejecutes el código.
+
+::: {.callout-tip title="Idea clave"}
+Los comentarios ayudan, pero la fuente final de verdad es el comportamiento del programa.
+:::
+
+## Ficha de repaso · Clase 2 {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+Tu meta es poder reconstruir las ideas sin ver el material.
+
+- ¿Cuándo usarías `defaultdict(int)` y cuándo `defaultdict(list)`?
+- ¿Qué diferencia hay entre `A - B` y `A ^ B`?
+- ¿Cómo accedes a la columna 2 de la fila 1?
+- ¿Por qué el buscador de tesoros necesita dos bucles `for`?
+
+::: {.callout-tip title="Idea clave"}
+Próximo paso: volver al Colab original y resolver el reto desde cero.
+:::
+
