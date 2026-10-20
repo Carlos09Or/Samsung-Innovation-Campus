@@ -3,7 +3,7 @@ title: "Clase 2 — Módulos y matrices"
 subtitle: "Samsung Innovation Campus · Capítulo 2"
 lang: es
 format:
-  revealjs:
+  live-revealjs:
     theme: night
     transition: fade
     navigation-mode: linear
@@ -47,7 +47,7 @@ En un inventario, puedes obtener una cantidad existente o crear un producto que 
 - Si ya existe, conserva el stock actual.
 - Si falta, inserta el stock inicial que indiques.
 
-```python
+```{pyodide}
 inventario = {"manzanas": 10, "peras": 5}
 print(inventario.setdefault("manzanas", 0))
 print(inventario.setdefault("naranjas", 0))
@@ -76,7 +76,7 @@ Actualiza varias claves existentes y añade otras en una sola llamada.
 - `jugo` se agrega porque es nuevo.
 - `te` se conserva sin cambios.
 
-```python
+```{pyodide}
 precios = {"cafe": 3.50, "te": 2.00, "pan": 1.00}
 precios.update({"cafe": 4.00, "pan": 1.20, "jugo": 3.00})
 print(precios["cafe"])
@@ -104,7 +104,7 @@ Ambos devuelven lo eliminado, pero seleccionan el elemento de forma diferente.
 - `popitem()` quita el último par insertado (Python 3.7+).
 - En diccionario vacío, `popitem()` produce `KeyError`.
 
-```python
+```{pyodide}
 usuario = {"id": 1024, "nombre": "Sofía", "rol": "Editor", "activo": True}
 print(usuario.pop("rol"))
 print(usuario.popitem())
@@ -130,7 +130,7 @@ Puedes dar a `pop()` un valor por defecto cuando no existe la clave.
 - `pop(clave)` sin defecto lanza `KeyError` si falta.
 - `pop(clave, defecto)` devuelve el defecto en ese caso.
 
-```python
+```{pyodide}
 usuario = {"nombre": "Sofía"}
 rol = usuario.pop("rol", "Sin rol")
 print(rol)
@@ -163,7 +163,7 @@ En `u={"nombre":"Ana","visitas":2}` aumenta las visitas a 3, agrega `"activo":Tr
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 u = {"nombre": "Ana", "visitas": 2}
 u.update({"visitas": 3})
 u.setdefault("activo", True)
@@ -191,7 +191,7 @@ Un módulo es un archivo o biblioteca de Python que ofrece funciones, objetos y 
 - `import math as m` crea un alias.
 - `from collections import defaultdict` importa un objeto concreto.
 
-```python
+```{pyodide}
 import math as m
 from collections import defaultdict
 print(m.sqrt(81))
@@ -218,7 +218,7 @@ defaultdict
 - Con `int`, el valor inicial es 0.
 - Puedes incrementar `conteo[letra]` sin comprobar antes si existe.
 
-```python
+```{pyodide}
 from collections import defaultdict
 conteo = defaultdict(int)
 for letra in "Banana":
@@ -245,7 +245,7 @@ Con `list`, cada clave nueva recibe una lista vacía que puedes llenar.
 - Un patrón útil para agrupar registros por categoría.
 - Se combina con `.append()` del tema de listas.
 
-```python
+```{pyodide}
 from collections import defaultdict
 pares = [("rojo", "manzana"), ("amarillo", "plátano"),
          ("rojo", "fresa")]
@@ -275,7 +275,7 @@ El módulo `datetime` permite crear fechas y restarlas para calcular intervalos.
 - `date.today()` usa la fecha de ejecución.
 - La resta de dos fechas devuelve `timedelta`, que tiene `.days`.
 
-```python
+```{pyodide}
 import datetime as dt
 inicio = dt.date(2026, 1, 1)
 fin = dt.date(2026, 1, 11)
@@ -301,7 +301,7 @@ Calcula la longitud de la hipotenusa a partir de los dos catetos.
 - Para un triángulo rectángulo: `c = √(a²+b²)`.
 - Con catetos 3 y 4, la hipotenusa mide 5.
 
-```python
+```{pyodide}
 import math as m
 cateto_a = 3
 cateto_b = 4
@@ -328,7 +328,7 @@ Funciones matemáticas del módulo `math` que aparecen en clase.
 - `floor(7.01)` redondea hacia abajo.
 - `math.pow(2, 3)` calcula la potencia como `float`.
 
-```python
+```{pyodide}
 import math as m
 print(m.ceil(7.01))
 print(m.floor(7.01))
@@ -362,7 +362,7 @@ Usa `defaultdict(int)` para contar las letras del texto `"coco"`. ¿Cuánto vale
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 from collections import defaultdict
 conteo = defaultdict(int)
 for letra in "coco":
@@ -389,7 +389,7 @@ Los conjuntos guardan una sola aparición de cada valor.
 - En el Colab se limpian listas de asistentes.
 - No uses índices numéricos ni des por hecho el orden de impresión.
 
-```python
+```{pyodide}
 asistentes = ["Ana", "Carlos", "Ana", "Sofia", "Carlos", "David"]
 unicos = set(asistentes)
 print(len(asistentes))
@@ -416,7 +416,7 @@ Reúne alumnos inscritos en al menos uno de los dos grupos.
 - Evita duplicados como Sofía que aparece en ambos.
 - `|` es equivalente a `.union()`.
 
-```python
+```{pyodide}
 manana = {"Ana", "Carlos", "Sofia"}
 tarde = {"Sofia", "David", "Elena"}
 todos = manana | tarde
@@ -442,7 +442,7 @@ Encuentra alumnos matriculados simultáneamente en Python e IA.
 - `&` selecciona solo lo que comparten.
 - `.intersection()` obtiene el mismo resultado.
 
-```python
+```{pyodide}
 python = {"Ana", "Erick", "David", "Elena"}
 ia = {"David", "Elena", "Jhoandry", "Gabriela"}
 print((python & ia) == {"David", "Elena"})
@@ -467,7 +467,7 @@ Qué personas están en el grupo rojo, pero no en el azul.
 - La diferencia depende de cuál conjunto va primero.
 - `A - B` no significa «los que son distintos en ambos».
 
-```python
+```{pyodide}
 rojo = {"Ana", "Carlos", "Sofia"}
 azul = {"Sofia", "David", "Elena"}
 print(rojo - azul == {"Ana", "Carlos"})
@@ -492,7 +492,7 @@ Recoge los miembros que pertenecen a un conjunto o al otro, pero no a ambos.
 - `A ^ B` elimina los elementos compartidos.
 - También se llama `.symmetric_difference()`.
 
-```python
+```{pyodide}
 rojo = {"Ana", "Carlos", "Sofia"}
 azul = {"Sofia", "David", "Elena"}
 solo_un_grupo = rojo ^ azul
@@ -522,7 +522,7 @@ Asocia cada símbolo con una pregunta concreta.
 - `A - B` → ¿quién está solo en A?
 - `A ^ B` → ¿quién aparece en uno de los dos pero no en ambos?
 
-```python
+```{pyodide}
 A = {1, 2, 3}
 B = {3, 4}
 print(len(A | B), len(A & B), len(A - B), len(A ^ B))
@@ -553,7 +553,7 @@ Resuelve una pregunta típica de inscripciones.
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 python = {"Ana", "Pedro", "Luis"}
 ia = {"Ana", "Sara"}
 exclusivos = python ^ ia
@@ -580,7 +580,7 @@ Una matriz representada con listas es una lista cuyos elementos también son lis
 - Cada lista interior contiene las columnas de esa fila.
 - No es un tipo de dato nuevo: es una estructura anidada.
 
-```python
+```{pyodide}
 matriz = [
     [1, 2, 3],
     [4, 5, 6],
@@ -609,7 +609,7 @@ Cada par de corchetes selecciona un nivel: primero la fila, luego la posición d
 - `matriz[1][2]` es el tercer elemento de esa fila.
 - Los dos índices empiezan en cero.
 
-```python
+```{pyodide}
 matriz = [[10, 20, 30], [40, 50, 60], [70, 80, 90]]
 print(matriz[1])
 print(matriz[1][2])
@@ -635,7 +635,7 @@ El bucle externo recorre las filas; el interno recorre los valores de la fila.
 - Cada iteración del `for` externo entrega una lista.
 - Cada iteración del interno entrega un elemento de esa lista.
 
-```python
+```{pyodide}
 matriz = [[1, 2], [3, 4]]
 for fila in matriz:
     for numero in fila:
@@ -663,7 +663,7 @@ Una lista bidimensional puede modificarse usando ambos índices.
 - `matriz[0][0] = 999` reemplaza la primera casilla.
 - El resto de la estructura no cambia.
 
-```python
+```{pyodide}
 matriz = [[10, 20, 30], [40, 50, 60]]
 matriz[0][0] = 999
 print(matriz[0])
@@ -689,7 +689,7 @@ Una cuadrícula de juego también puede modelarse con listas anidadas.
 - `tablero[1][1]` marca la casilla central.
 - La segunda asignación a una casilla reemplaza la anterior.
 
-```python
+```{pyodide}
 tablero = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 tablero[1][1] = "X"
 print(tablero[1])
@@ -714,7 +714,7 @@ Un valor nuevo asignado a una misma casilla reemplaza al anterior.
 - Una lista no recuerda el valor anterior de esa posición.
 - Para evitar jugadas ilegales habría que comprobar si la casilla está vacía (refuerzo).
 
-```python
+```{pyodide}
 tablero = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 tablero[0][2] = "X"
 tablero[0][2] = "O"
@@ -746,7 +746,7 @@ En `m=[["a","b"],["c","d"]]`, ¿qué imprime `m[1][0]`? Cambia después la casil
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 m = [["a", "b"], ["c", "d"]]
 print(m[1][0])  # c
 m[0][1] = "X"
@@ -773,7 +773,7 @@ El Colab propone una matriz con premios repetidos: debes encontrar qué premios 
 - Proceso: recorrer filas y agregar valores a un `set`.
 - Salida: conjunto de premios únicos.
 
-```python
+```{pyodide}
 tablero = [
     ["oro", "plata", "oro"],
     ["bronce", "diamante", "plata"],
@@ -806,7 +806,7 @@ Traducimos la consigna a pasos claros antes de programarla.
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 # Un set ignora duplicados automáticamente.
 unicos = set()
 for premio in ["oro", "oro", "plata"]:
@@ -830,7 +830,7 @@ Esencialmente la misma estrategia de la respuesta que aparece en el Colab.
 - Bucle interno → premios.
 - `set.add()` garantiza unicidad.
 
-```python
+```{pyodide}
 tablero = [["oro", "plata", "oro"],
            ["bronce", "diamante", "plata"],
            ["oro", "bronce", "diamante"]]
@@ -860,7 +860,7 @@ Refuerzo opcional: al cambiar la estructura de datos, cambia la pregunta que pue
 - Con `set` sabes qué premios existen.
 - Con `defaultdict(int)` sabes cuántas veces aparece cada premio.
 
-```python
+```{pyodide}
 from collections import defaultdict
 tablero = [["oro", "plata"], ["oro", "bronce"]]
 conteo = defaultdict(int)

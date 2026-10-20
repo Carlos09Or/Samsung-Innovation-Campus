@@ -1,0 +1,29 @@
+/* Python interactivo en las presentaciones Samsung Innovation Campus. */
+.py-live-editor {
+  display:block; width:100%; border:0; resize:vertical; background:#081524;
+  color:#e9f4ff; padding:16px 17px; font:clamp(12px,1vw,15px)/1.54
+  ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;
+  tab-size:4; min-height:95px; max-height:360px; outline:0; white-space:pre; overflow:auto;
+}
+.py-live-editor:focus {box-shadow:inset 0 0 0 2px #5eaee8;}
+.py-live-actions {display:flex; gap:9px; flex-wrap:wrap; align-items:center;
+  padding:9px 12px 12px; border-top:1px solid #344964;background:#111e31;}
+.py-live-btn {border-radius:9px; padding:8px 13px; font:700 12px/1.1 system-ui;
+  cursor:pointer; border:1px solid #446482; background:#233d5c; color:#eaf5ff;}
+.py-live-btn.run {background:#71e6cc; color:#092537; border-color:#71e6cc;}
+.py-live-btn:hover:not(:disabled){filter:brightness(1.13);}
+.py-live-btn:disabled {opacity:.65;cursor:wait;}
+.py-live-shortcut {color:#98aecb;font-size:11px;margin-left:auto;}
+.py-live-result {margin-top:10px; border:1px solid #396c6b;
+  background:#0d252b; border-radius:12px; overflow:hidden;}
+.py-live-result-head {padding:10px 15px; font:800 11px system-ui; letter-spacing:.08em; color:#8be8d7;}
+.py-live-result pre {padding:0 15px 12px;margin:0; font:clamp(12px,.96vw,15px)/1.5
+  ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:#eafaf6;}
+.py-live-result.has-error {background:#2d1721;border-color:#97515f;}
+.py-live-result.has-error .py-live-result-head,.py-live-result.has-error pre {color:#ffb2bd;}
+.py-live-reference {margin-top:9px;color:#a9bcd2; font-size:12px;}
+.py-live-reference summary {cursor:pointer;padding:5px 0;font-weight:700;}
+.py-live-reference .output-box{margin-top:5px;}
+.py-live-note {padding:12px 17px; background:#132e39; color:#bdece0; border:1px solid #26586a;
+  font-size:12px;line-height:1.55;border-radius:10px;margin:0 0 15px;}
+@media(max-width:640px){.py-live-editor{font-size:12px;min-height:85px;}.py-live-shortcut{display:none;}}

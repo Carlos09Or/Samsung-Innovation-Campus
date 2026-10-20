@@ -52,3 +52,8 @@ Duplica `clase_2.qmd` con otro nombre, reemplaza los bloques por lo estudiado en
 4. GitHub Pages servirá `index.html` como portada y podrás acceder a ambas clases desde tu enlace.
 
 También puedes publicar los HTML sin reconstruirlos con Quarto; están empaquetados sin bibliotecas externas.
+
+
+## Modo interactivo
+
+Las diapositivas permiten **editar y ejecutar Python directamente**. Cada celda tiene un botón Ejecutar, el resultado real y la salida esperada desplegable. El intérprete Pyodide se descarga de Internet en el primer uso. Los cambios de código se guardan localmente en el navegador. Para generar presentaciones editables desde los archivos `.qmd`, ejecuta `quarto add r-wasm/quarto-live` y después `quarto render clase_1.qmd` o `quarto render clase_2.qmd`.

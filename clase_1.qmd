@@ -3,7 +3,7 @@ title: "Clase 1 — Estructuras de datos"
 subtitle: "Samsung Innovation Campus · Capítulo 2"
 lang: es
 format:
-  revealjs:
+  live-revealjs:
     theme: night
     transition: fade
     navigation-mode: linear
@@ -26,7 +26,7 @@ Recorre cada tema en tres pasos: entender → predecir → comprobar.
 
 - Lee la explicación antes de mirar el código.
 - Predice qué imprimirá Python y luego revisa la salida.
-- Copia el ejemplo y cambia un dato en Colab para probar tu hipótesis.
+- Edita el código en la diapositiva, ejecútalo y compara con la salida esperada.
 
 ::: {.callout-tip title="Idea clave"}
 Las diapositivas de práctica guardan la solución oculta hasta que decidas verla.
@@ -46,7 +46,7 @@ Una lista agrupa varios valores bajo un solo nombre. Conserva el orden de los el
 - Puede contener distintos tipos de datos.
 - Su primer elemento tiene índice `0`.
 
-```python
+```{pyodide}
 frutas = ["Melocotón", "Sandia", "Banana", "Papaya"]
 print(frutas[0])
 ```
@@ -70,7 +70,7 @@ Una lista es mutable: puedes agregar, eliminar o reemplazar elementos.
 - Una lista de 3 elementos tiene longitud `3`.
 - Sus índices válidos son `0`, `1` y `2`.
 
-```python
+```{pyodide}
 frutas = ["manzana", "cambur", "patilla"]
 print(len(frutas))
 print(frutas[2])
@@ -97,7 +97,7 @@ Los índices positivos cuentan desde el inicio; los negativos cuentan desde el f
 - `frutas[-1]` → último.
 - `frutas[-2]` → penúltimo.
 
-```python
+```{pyodide}
 frutas = ["manzana", "cambur", "patilla"]
 print(frutas[0])
 print(frutas[-1])
@@ -124,7 +124,7 @@ Con `[inicio:fin]` seleccionas posiciones desde `inicio` hasta ANTES de `fin`.
 - `lista[1:3]` toma los índices `1` y `2`.
 - También funciona en `del` para borrar un rango.
 
-```python
+```{pyodide}
 frutas = ["manzana", "pera", "plátano", "uva"]
 print(frutas[1:3])
 del frutas[0:2]
@@ -151,7 +151,7 @@ El operador `+` crea una lista nueva con los elementos de ambas listas, en ese o
 - No modifica necesariamente las listas originales.
 - Es distinto de sumar números elemento por elemento.
 
-```python
+```{pyodide}
 lista1 = [1, 2, 3]
 lista2 = [4, 5, 6]
 combinada = lista1 + lista2
@@ -177,7 +177,7 @@ Este ejemplo aparece en el Colab como «Adición de listas».
 - Modifica la lista existente.
 - No devuelve la lista: su valor de retorno es `None`.
 
-```python
+```{pyodide}
 carros = ["Ferrari", "Lamborghini"]
 carros.append("Rolls-Royce")
 print(carros)
@@ -202,7 +202,7 @@ print(carros)
 - `append([3,4])` agrega una lista dentro de la lista.
 - `extend([3,4])` agrega dos números separados.
 
-```python
+```{pyodide}
 a = [1, 2]
 b = [1, 2]
 a.append([3, 4])
@@ -232,7 +232,7 @@ Comparar `append` y `extend` evita errores cuando trabajas con listas anidadas.
 - `del frutas[0:2]` borra los dos primeros.
 - No devuelve el elemento eliminado.
 
-```python
+```{pyodide}
 frutas = ["manzana", "cambur", "cereza", "fresa"]
 del frutas[1]
 print(frutas)
@@ -258,7 +258,7 @@ Usa `del` cuando NO necesitas guardar lo que borraste.
 - En el Colab se usa `pop(-3)` y también `pop()`.
 - En una lista vacía produce `IndexError`.
 
-```python
+```{pyodide}
 carros = ["Toyota", "Honda", "Ford"]
 eliminado = carros.pop()
 print(eliminado)
@@ -286,7 +286,7 @@ Son métodos diferentes, aunque aparecen juntos en el material de clase.
 - `clear()` borra TODOS los elementos.
 - `remove` lanza `ValueError` si el valor no existe.
 
-```python
+```{pyodide}
 frutas = ["Mango", "kiwi", "cambur", "kiwi"]
 frutas.remove("kiwi")
 print(frutas)
@@ -315,7 +315,7 @@ El Colab enumera estos métodos. Aquí tienes su efecto práctico.
 - `sort()` ordena la lista en su lugar.
 - `reverse()` invierte el orden actual (no ordena).
 
-```python
+```{pyodide}
 numeros = [3, 1, 3, 2]
 print(numeros.count(3))
 numeros.sort()
@@ -351,7 +351,7 @@ Partiendo de `items = ["cuaderno", "lápiz"]`, añade "borrador"; elimina "lápi
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 items = ["cuaderno", "lápiz"]
 items.append("borrador")
 items.remove("lápiz")
@@ -378,7 +378,7 @@ Una tupla guarda valores en orden, permite indexarlos, pero no permite cambiar s
 - También acepta valores mezclados.
 - La indexación positiva y negativa funciona como en listas.
 
-```python
+```{pyodide}
 meses = ("Enero", "Febrero", "Marzo")
 print(meses[0])
 print(meses[-1])
@@ -404,7 +404,7 @@ Un bucle `for` permite leer cada elemento de la secuencia, uno por uno.
 - `for mes in meses` toma cada mes en orden.
 - La variable `mes` cambia en cada iteración.
 
-```python
+```{pyodide}
 meses = ("Enero", "Febrero", "Marzo")
 for mes in meses:
     print(mes)
@@ -432,7 +432,7 @@ Las dos son secuencias: el criterio principal es si necesitas modificar la colec
 - TUPLA `( )`: coordenadas fijas o meses del año.
 - Ambas tienen `len()`, índices, slicing y recorrido con `for`.
 
-```python
+```{pyodide}
 lista = [10, 20]
 tupla = (10, 20)
 lista[0] = 99
@@ -465,7 +465,7 @@ Relaciona una **clave** con un **valor**. Para buscar no usas posiciones numéri
 - Las claves deben ser hashables y son únicas dentro de un diccionario.
 - Puedes añadir, modificar y eliminar pares.
 
-```python
+```{pyodide}
 persona = {"nombre": "Ana", "edad": 28}
 print(persona["nombre"])
 persona["edad"] = 29
@@ -494,7 +494,7 @@ Devuelven vistas de las claves o de los valores presentes.
 - `values()` → recorrer los datos almacenados.
 - No son listas: son objetos vista relacionados con el diccionario.
 
-```python
+```{pyodide}
 persona = {"nombre": "Ana", "edad": 28}
 print(list(persona.keys()))
 print(list(persona.values()))
@@ -521,7 +521,7 @@ En el Colab se recorre el diccionario de contactos de tres maneras.
 - `for valor in contactos.values()` recorre valores.
 - La indentación señala el cuerpo del `for`.
 
-```python
+```{pyodide}
 contactos = {"Juan": "+58", "Ana": "+507"}
 for nombre in contactos:
     print(nombre)
@@ -551,7 +551,7 @@ Cuando solo quieres las claves, escribir `.keys()` es opcional.
 - Cada vuelta produce un par de datos.
 - `for clave, valor in ...` asigna ambos.
 
-```python
+```{pyodide}
 contactos = {"Juan": "+58", "Ana": "+507"}
 for nombre, telefono in contactos.items():
     print(nombre, "→", telefono)
@@ -578,7 +578,7 @@ Si existe la clave, devuelve su valor actual. Si no existe, crea la clave con el
 - Si omites el segundo argumento, el valor nuevo es `None`.
 - En el Colab, `Ana` ya tenía 66, así que sigue valiendo 66.
 
-```python
+```{pyodide}
 puntos = {"Ana": 66, "Luis": 88}
 print(puntos.setdefault("Ana", 95))
 print(puntos.setdefault("Pedro", 0))
@@ -607,7 +607,7 @@ Busca una clave sin fallar cuando no existe: devuelve `None` o un valor por defe
 - `dic.get(clave)` retorna `None`.
 - `dic.get(clave, defecto)` retorna el defecto indicado.
 
-```python
+```{pyodide}
 persona = {"nombre": "Ana", "edad": 28}
 print(persona.get("nombre"))
 print(persona.get("ciudad"))
@@ -635,7 +635,7 @@ Elimina el par solicitado y devuelve el valor asociado.
 - Es diferente del `pop()` de listas, que recibe índices.
 - Si la clave falta, puedes pasar un valor por defecto.
 
-```python
+```{pyodide}
 persona = {"nombre": "Ana", "edad": 28}
 edad = persona.pop("edad")
 print(edad)
@@ -663,7 +663,7 @@ Con `update` añades o reemplazas pares. Con `clear` vacías el diccionario.
 - Cuando llega una clave existente, actualiza su valor.
 - `clear()` deja `{}`.
 
-```python
+```{pyodide}
 persona = {"nombre": "Ana"}
 persona.update({"edad": 28, "ciudad": "Madrid"})
 print(persona)
@@ -693,7 +693,7 @@ Cuatro preguntas que ayudan a decidir qué método utilizar.
 - ¿Quiero fusionar cambios? → `update`.
 - ¿Quiero eliminar? → `pop` o `clear`.
 
-```python
+```{pyodide}
 registro = {"usuario": "Ana"}
 registro.setdefault("activo", True)
 registro.update({"visitas": 3})
@@ -725,7 +725,7 @@ Crea `contactos` con Ana → 507 y Luis → 600. Añade Pedro → 612 usando una
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 contactos = {"Ana": 507, "Luis": 600}
 contactos["Pedro"] = 612
 for nombre, telefono in contactos.items():
@@ -752,7 +752,7 @@ JSON es un formato de texto estándar para representar datos; se parece a un dic
 - Python: `{"nombre": "Ana"}` puede ser un objeto `dict`.
 - En JSON se usan `true`, `false` y `null`; en Python `True`, `False`, `None`.
 
-```python
+```{pyodide}
 import json
 texto = '{"nombre": "Ana", "activo": true}'
 datos = json.loads(texto)
@@ -780,7 +780,7 @@ La **s** de `loads` recuerda que trabajas con una cadena (`str`).
 - Entrada: texto JSON válido.
 - Salida: `dict`, `list` u otro tipo Python, según el JSON.
 
-```python
+```{pyodide}
 import json
 cadena = '{"nombre": "Ana", "edad": 28}'
 persona = json.loads(cadena)
@@ -807,7 +807,7 @@ Convierte valores Python en una cadena con formato JSON.
 - Una lista o un diccionario puede convertirse.
 - Con `ensure_ascii=False` puedes conservar caracteres como ñ y acentos.
 
-```python
+```{pyodide}
 import json
 datos = {"ciudad": ["Madrid", "París"], "activo": True}
 texto = json.dumps(datos, ensure_ascii=False)
@@ -833,7 +833,7 @@ En los cuadernos convierten una lista de frutas a JSON y viceversa.
 - `loads` puede devolver una lista, no siempre un diccionario.
 - `dumps` convierte la lista en texto JSON.
 
-```python
+```{pyodide}
 import json
 texto = '["manzana", "banana", "cereza"]'
 frutas = json.loads(texto)
@@ -862,7 +862,7 @@ Estos métodos trabajan con un archivo abierto, no directamente con una cadena.
 - `json.load(archivo)` lee y convierte el contenido.
 - `with open(...)` cierra el archivo automáticamente.
 
-```python
+```{pyodide}
 import json
 datos = {"nombre": "Ana"}
 with open("data.json", "w", encoding="utf-8") as f:
@@ -897,7 +897,7 @@ Convierte `["rojo", "verde", "azul"]` a JSON; recupera el texto convertido y com
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 import json
 colores = ["rojo", "verde", "azul"]
 texto = json.dumps(colores)
@@ -926,7 +926,7 @@ Un conjunto almacena elementos únicos; el orden al imprimirlos no es una garant
 - No puedes acceder con `conjunto[0]`.
 - Para un conjunto vacío usa `set()`; `{}` crea un diccionario.
 
-```python
+```{pyodide}
 colores = {"rojo", "verde", "azul"}
 print(len(colores))
 vacio = set()
@@ -954,7 +954,7 @@ Agregar y eliminar elementos únicos.
 - `remove(x)` elimina ese elemento o produce `KeyError`.
 - Si quieres evitar ese error al borrar, usa `discard(x)` (refuerzo).
 
-```python
+```{pyodide}
 carros = {"Toyota", "Honda", "Ford"}
 carros.add("Chevrolet")
 carros.remove("Toyota")
@@ -982,7 +982,7 @@ Convertir una lista a conjunto conserva solo elementos distintos.
 - Muy útil para números, nombres o identificadores repetidos.
 - No conserva necesariamente el orden original.
 
-```python
+```{pyodide}
 numeros = [1, 2, 2, 3, 4, 4, 5]
 unicos = set(numeros)
 print(len(unicos))
@@ -1009,7 +1009,7 @@ La unión reúne todos los elementos, sin repetir los compartidos.
 - Método `A.union(B)`.
 - Operador equivalente: `A | B`.
 
-```python
+```{pyodide}
 A = {"perro", "gato", "loro"}
 B = {"gato", "conejo", "serpiente"}
 union = A | B
@@ -1037,7 +1037,7 @@ La intersección guarda únicamente los elementos presentes en ambos conjuntos.
 - Método `A.intersection(B)`.
 - Operador equivalente: `A & B`.
 
-```python
+```{pyodide}
 A = {"perro", "gato", "loro"}
 B = {"gato", "conejo", "serpiente"}
 print(A & B)
@@ -1062,7 +1062,7 @@ Piensa en alumnos que están inscritos en dos cursos a la vez.
 - Método `A.difference(B)`.
 - El orden importa: `A - B` no suele ser igual a `B - A`.
 
-```python
+```{pyodide}
 A = {"perro", "gato", "loro"}
 B = {"gato", "conejo", "serpiente"}
 print(A - B == {"perro", "loro"})
@@ -1095,7 +1095,7 @@ Para `A={1,2,3,4}` y `B={3,4,5}`, ¿qué obtienes con `A|B`, `A&B` y `A-B`?
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 A = {1, 2, 3, 4}
 B = {3, 4, 5}
 print(A | B)  # {1, 2, 3, 4, 5}
@@ -1124,7 +1124,7 @@ Repaso comparativo para elegir rápidamente la estructura adecuada.
 - `dict` → asocia claves únicas con valores.
 - `set` → colección de valores únicos, sin índice.
 
-```python
+```{pyodide}
 lista = ["Ana", "Ana"]
 tupla = ("Ana", "Luis")
 diccionario = {"Ana": 95}
@@ -1172,7 +1172,7 @@ Tienes `asistentes=["Ana","Luis","Ana","Pedro"]`. Crea un conjunto sin duplicado
 <details>
 <summary>Mostrar solución</summary>
 
-```python
+```{pyodide}
 import json
 asistentes = ["Ana", "Luis", "Ana", "Pedro"]
 unicos = set(asistentes)
