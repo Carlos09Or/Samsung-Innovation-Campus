@@ -107,6 +107,36 @@ function folderPath(id) {
   return parts.join(' / ');
 }
 
+// ---------- Diálogos propios (algunos navegadores bloquean prompt/confirm sin avisar) ----------
+const modal = { root: $('modal'), title: $('modal-title'), text: $('modal-text'), input: $('modal-input'), ok: $('modal-ok'), cancel: $('modal-cancel') };
+let modalResolve = null;
+function openModal({ title, text = '', input = null, okLabel = 'Aceptar', danger = false, cancel = true }) {
+  if (modalResolve) closeModal(null);
+  modal.title.textContent = title;
+  modal.text.textContent = text; modal.text.hidden = !text;
+  modal.input.hidden = input === null; modal.input.value = input ?? '';
+  modal.ok.textContent = okLabel; modal.ok.classList.toggle('danger', danger);
+  modal.cancel.hidden = !cancel;
+  modal.root.hidden = false;
+  if (input === null) modal.ok.focus(); else { modal.input.focus(); modal.input.select(); }
+  return new Promise(resolve => { modalResolve = resolve; });
+}
+function closeModal(value) {
+  modal.root.hidden = true;
+  const resolve = modalResolve; modalResolve = null;
+  if (resolve) resolve(value);
+}
+modal.ok.addEventListener('click', () => closeModal(modal.input.hidden ? true : modal.input.value));
+modal.cancel.addEventListener('click', () => closeModal(null));
+modal.root.addEventListener('click', (e) => { if (e.target === modal.root) closeModal(null); });
+modal.root.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { e.stopPropagation(); closeModal(null); }
+  if (e.key === 'Enter' && e.target === modal.input) { e.preventDefault(); modal.ok.click(); }
+});
+const askText = (title, value = '') => openModal({ title, input: value, okLabel: 'Guardar' });
+const askConfirm = (title, text, okLabel = 'Eliminar', danger = true) => openModal({ title, text, okLabel, danger }).then(Boolean);
+const notify = (title, text = '') => openModal({ title, text, cancel: false });
+
 // ---------- Guardado ----------
 function scheduleSave() {
   if (!nb) return;
@@ -206,24 +236,24 @@ function renderFolderSelect() {
 }
 
 async function createFolder(parentId = null, nombre = null) {
-  nombre = nombre ?? prompt(parentId ? 'Nombre de la subcarpeta:' : 'Nombre de la carpeta:', '');
+  nombre = nombre ?? await askText(parentId ? 'Nombre de la subcarpeta' : 'Nombre de la carpeta');
   if (!nombre || !nombre.trim()) return null;
   const f = { id: uid(), parent_id: parentId, nombre: nombre.trim().slice(0, 120), creado: now() };
   try {
     await store.saveFolder(f);
     folders.push(f); collapsed.delete(parentId); selectedFolder = f.id; renderTree();
     return f;
-  } catch (err) { alert('No se pudo crear la carpeta: ' + err.message); return null; }
+  } catch (err) { notify('No se pudo crear la carpeta', err.message); return null; }
 }
 async function renameFolder(f) {
-  const nombre = prompt('Nuevo nombre de la carpeta:', f.nombre);
+  const nombre = await askText('Nuevo nombre de la carpeta', f.nombre);
   if (!nombre || !nombre.trim() || nombre.trim() === f.nombre) return;
   const updated = { ...f, nombre: nombre.trim().slice(0, 120) };
   try { await store.saveFolder(updated); Object.assign(f, updated); renderTree(); updateOverline(); }
-  catch (err) { alert('No se pudo renombrar: ' + err.message); }
+  catch (err) { notify('No se pudo renombrar', err.message); }
 }
 async function deleteFolder(f) {
-  if (!confirm(`¿Eliminar la carpeta «${f.nombre}» y sus subcarpetas?\nLos cuadernos que contenga no se borran: pasan a «Sin carpeta».`)) return;
+  if (!await askConfirm(`¿Eliminar la carpeta «${f.nombre}»?`, 'También se borran sus subcarpetas. Los cuadernos que contenga no se borran: pasan a «Sin carpeta».')) return;
   await flush();
   try {
     await store.deleteFolder(f.id);
@@ -231,7 +261,7 @@ async function deleteFolder(f) {
     if (nb && nb.carpeta_id && !folders.some(x => x.id === nb.carpeta_id)) nb.carpeta_id = null;
     if (selectedFolder && !folders.some(x => x.id === selectedFolder)) selectedFolder = null;
     renderTree(); updateOverline();
-  } catch (err) { alert('No se pudo eliminar: ' + err.message); }
+  } catch (err) { notify('No se pudo eliminar la carpeta', err.message); }
 }
 
 // ---------- Cuadernos ----------
@@ -246,18 +276,18 @@ async function createNotebook({ carpeta_id = selectedFolder, titulo = 'Cuaderno 
     showNotebook(nuevo, 0);
     closeSide();
     if (tema) el.notes.focus(); else el.nbTitle.select();
-  } catch (err) { alert('No se pudo crear el cuaderno: ' + err.message); }
+  } catch (err) { notify('No se pudo crear el cuaderno', err.message); }
 }
 async function openNotebook(id) {
   if (nb && nb.id === id) return;
   await flush();
   try {
     const data = await store.getNotebook(id);
-    if (!data) { alert('Ese cuaderno ya no existe.'); await reloadLists(); return; }
+    if (!data) { notify('Ese cuaderno ya no existe'); await reloadLists(); return; }
     if (!Array.isArray(data.diapositivas) || !data.diapositivas.length) data.diapositivas = [nuevaDiapositiva()];
     const pos = Number(safeGet('sic:cuadernos:pos:' + id)) || 0;
     showNotebook(data, pos);
-  } catch (err) { alert('No se pudo abrir el cuaderno: ' + err.message); }
+  } catch (err) { notify('No se pudo abrir el cuaderno', err.message); }
 }
 function showNotebook(data, pos) {
   nb = data;
@@ -277,7 +307,7 @@ function closeNotebook() {
   renderTree();
 }
 async function deleteNotebook() {
-  if (!nb || !confirm(`¿Eliminar el cuaderno «${nb.titulo || 'sin título'}» con todas sus diapositivas? No se puede deshacer.`)) return;
+  if (!nb || !await askConfirm(`¿Eliminar el cuaderno «${nb.titulo || 'sin título'}»?`, 'Se borran todas sus diapositivas. No se puede deshacer.')) return;
   clearTimeout(saveTimer); dirty = false;
   const id = nb.id;
   try {
@@ -285,7 +315,7 @@ async function deleteNotebook() {
     await store.deleteNotebook(id);
     notebooks = notebooks.filter(n => n.id !== id);
     closeNotebook();
-  } catch (err) { alert('No se pudo eliminar: ' + err.message); }
+  } catch (err) { notify('No se pudo eliminar el cuaderno', err.message); }
 }
 function updateOverline() {
   if (!nb) return;
@@ -338,10 +368,10 @@ function moveSlide(delta) {
   const list = nb.diapositivas; [list[idx], list[j]] = [list[j], list[idx]];
   scheduleSave(); show(j);
 }
-function deleteSlide() {
+async function deleteSlide() {
   const s = slide();
   const hasContent = s.titulo || s.notas || s.codigo;
-  if (hasContent && !confirm(`¿Eliminar la diapositiva ${idx + 1}${s.titulo ? ' «' + s.titulo + '»' : ''}?`)) return;
+  if (hasContent && !await askConfirm(`¿Eliminar la diapositiva ${idx + 1}${s.titulo ? ' «' + s.titulo + '»' : ''}?`, 'Se borran su título, notas, código y salida.')) return;
   if (nb.diapositivas.length === 1) nb.diapositivas[0] = nuevaDiapositiva();
   else nb.diapositivas.splice(idx, 1);
   scheduleSave(); show(idx);
@@ -454,7 +484,7 @@ function renderAccount(message = '', isError = false) {
   if (message) el.account.append(h('div', { class: 'msg' + (isError ? ' error' : '') }, message));
 }
 async function migrateLocal() {
-  if (!session || !confirm('Se copiarán a tu cuenta las carpetas y cuadernos guardados en este navegador, y luego se borrarán de aquí. ¿Continuar?')) return;
+  if (!session || !await askConfirm('¿Subir a la nube lo guardado en este navegador?', 'Se copiarán a tu cuenta las carpetas y cuadernos de este navegador y luego se borrarán de aquí.', 'Subir', false)) return;
   await flush();
   const remote = store, d = localStore.read();
   const depth = (f) => { let n = 0; const seen = new Set(); for (let p = f; p && p.parent_id && !seen.has(p.id); p = d.carpetas.find(x => x.id === p.parent_id)) { seen.add(p.id); n++; } return n; };
@@ -535,6 +565,7 @@ el.sideToggle.addEventListener('click', () => el.side.classList.contains('open')
 el.sideBackdrop.addEventListener('click', closeSide);
 window.addEventListener('resize', fitEditors);
 document.addEventListener('keydown', (e) => {
+  if (!modal.root.hidden) return;
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && nb) { e.preventDefault(); runCurrent(); return; }
   if (e.key === 'Escape') closeSide();
   if (!nb || e.target.closest('textarea,input,select,[contenteditable="true"]')) return;
