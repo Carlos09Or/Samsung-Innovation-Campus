@@ -294,7 +294,12 @@ function updateOverline() {
 
 // ---------- Diapositivas ----------
 const slide = () => nb.diapositivas[idx];
-function autoGrow(t, min) { t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight + 2, min) + 'px'; }
+const notesMin = () => (matchMedia('(max-width: 640px)').matches ? 110 : 180);
+function autoGrow(t, min) {
+  if (!t.offsetWidth) return; // oculto: la altura se calcula al volver a mostrarse
+  t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight + 2, min) + 'px';
+}
+function fitEditors() { if (nb) { autoGrow(el.notes, notesMin()); autoGrow(el.code, 170); } }
 function show(i) {
   if (!nb) return;
   idx = Math.max(0, Math.min(i, nb.diapositivas.length - 1));
@@ -307,7 +312,7 @@ function show(i) {
   el.progress.style.width = ((idx + 1) / n * 100) + '%';
   el.back.disabled = idx === 0; el.next.disabled = idx === n - 1;
   el.moveLeft.disabled = idx === 0; el.moveRight.disabled = idx === n - 1;
-  autoGrow(el.notes, 180); autoGrow(el.code, 170);
+  fitEditors();
   safeSet('sic:cuadernos:pos:' + nb.id, String(idx));
 }
 function renderOutput(s) {
@@ -487,7 +492,7 @@ async function initAuth() {
 function bindText(input, apply) { input.addEventListener('input', () => { if (nb) { apply(input.value); scheduleSave(); } }); }
 bindText(el.nbTitle, v => { nb.titulo = v; const meta = notebooks.find(n => n.id === nb.id); if (meta) meta.titulo = v; renderTree(); });
 bindText(el.slideTitle, v => { slide().titulo = v; });
-bindText(el.notes, v => { slide().notas = v; autoGrow(el.notes, 180); });
+bindText(el.notes, v => { slide().notas = v; autoGrow(el.notes, notesMin()); });
 bindText(el.code, v => { slide().codigo = v; autoGrow(el.code, 170); });
 el.code.addEventListener('keydown', (e) => {
   if (e.key === 'Tab' && !e.shiftKey) {
@@ -528,6 +533,7 @@ function openSide() { el.side.classList.add('open'); el.sideBackdrop.classList.a
 function closeSide() { el.side.classList.remove('open'); el.sideBackdrop.classList.remove('open'); el.sideToggle.setAttribute('aria-expanded', 'false'); }
 el.sideToggle.addEventListener('click', () => el.side.classList.contains('open') ? closeSide() : openSide());
 el.sideBackdrop.addEventListener('click', closeSide);
+window.addEventListener('resize', fitEditors);
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && nb) { e.preventDefault(); runCurrent(); return; }
   if (e.key === 'Escape') closeSide();
