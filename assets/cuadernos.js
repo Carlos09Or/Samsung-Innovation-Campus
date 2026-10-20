@@ -9,8 +9,12 @@ const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx
   const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16);
 }));
 const now = () => new Date().toISOString();
-const CLASES = { clase_1: 'Clase 1', clase_2: 'Clase 2' };
-const nombreClase = (c) => CLASES[c] || c.replace(/_/g, ' ').replace(/^./, m => m.toUpperCase());
+// Cada clase vive en la carpeta «Semana N / Clase N». Al agregar clases nuevas, añádelas aquí.
+const CLASES = {
+  clase_1: { nombre: 'Clase 1', semana: 'Semana 1' },
+  clase_2: { nombre: 'Clase 2', semana: 'Semana 1' }
+};
+const nombreClase = (c) => CLASES[c]?.nombre || c.replace(/_/g, ' ').replace(/^./, m => m.toUpperCase());
 
 function safeGet(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
 function safeSet(key, value) { try { localStorage.setItem(key, value); } catch (_) { /* privado o lleno */ } }
@@ -431,6 +435,8 @@ async function reloadLists() {
   el.loadError.hidden = true;
   try {
     [folders, notebooks] = await Promise.all([store.listFolders(), store.listNotebooks()]);
+    renderTree();
+    return true;
   } catch (err) {
     folders = []; notebooks = [];
     el.loadError.hidden = false;
@@ -438,6 +444,56 @@ async function reloadLists() {
       '. Revisa que hayas ejecutado supabase/schema.sql en tu proyecto.';
   }
   renderTree();
+  return false;
+}
+const findFolder = (nombre, parentId) =>
+  folders.find(f => (f.parent_id || null) === parentId && f.nombre.toLowerCase() === nombre.toLowerCase());
+async function ensureFolder(nombre, parentId = null) {
+  return findFolder(nombre, parentId) || await createFolder(parentId, nombre);
+}
+async function folderDeClase(clase) {
+  const semana = CLASES[clase]?.semana;
+  const padre = semana ? await ensureFolder(semana) : null;
+  if (semana && !padre) return null;
+  return ensureFolder(nombreClase(clase), padre?.id || null);
+}
+// Una sola vez por cuenta: mete las carpetas sueltas «Clase N» dentro de su «Semana N».
+async function agruparPorSemana() {
+  const key = 'sic:cuadernos:semanas:' + (session?.user?.id || 'local');
+  if (safeGet(key)) return;
+  const movidas = [];
+  try {
+    for (const info of Object.values(CLASES)) {
+      const suelta = findFolder(info.nombre, null);
+      if (!suelta) continue;
+      const semana = await ensureFolder(info.semana);
+      if (!semana) throw new Error('no se pudo crear la carpeta ' + info.semana);
+      const destino = findFolder(info.nombre, semana.id);
+      if (!destino) {
+        await store.saveFolder({ ...suelta, parent_id: semana.id });
+        suelta.parent_id = semana.id;
+      } else {
+        // Ya existía «Semana N / Clase N»: se pasa el contenido y se quita la carpeta suelta.
+        for (const f of folders.filter(x => x.parent_id === suelta.id)) {
+          await store.saveFolder({ ...f, parent_id: destino.id }); f.parent_id = destino.id;
+        }
+        for (const n of notebooks.filter(x => x.carpeta_id === suelta.id)) {
+          const full = await store.getNotebook(n.id);
+          if (full) { full.carpeta_id = destino.id; await store.saveNotebook(full); }
+          n.carpeta_id = destino.id;
+        }
+        await store.deleteFolder(suelta.id);
+        folders = folders.filter(x => x.id !== suelta.id);
+      }
+      movidas.push(info.nombre);
+    }
+    safeSet(key, '1');
+  } catch (err) {
+    setStatus('No se pudieron ordenar las carpetas por semana: ' + err.message, true);
+  }
+  selectedFolder = null;
+  renderTree();
+  if (movidas.length) setStatus(`Ordené ${movidas.join(' y ')} dentro de su semana ✓`);
 }
 function renderAccount(message = '', isError = false) {
   el.account.textContent = '';
@@ -502,7 +558,7 @@ async function useSession(s) {
   store = s ? supabaseStore(client) : localStore;
   closeNotebook();
   renderAccount();
-  await reloadLists();
+  if (await reloadLists()) await agruparPorSemana();
 }
 async function initAuth() {
   const cfg = window.SIC_SUPABASE || {};
@@ -578,17 +634,13 @@ document.addEventListener('keydown', (e) => {
 (async () => {
   try { await initAuth(); } catch (err) { client = null; store = localStore; }
   renderAccount();
-  await reloadLists();
+  if (await reloadLists()) await agruparPorSemana();
   const params = new URLSearchParams(location.search);
   if (params.get('nuevo') === '1') {
     history.replaceState(null, '', location.pathname);
     const clase = (params.get('clase') || '').replace(/[^\w-]/g, '').slice(0, 40) || null;
     const tema = (params.get('tema') || '').slice(0, 120);
-    let carpeta = null;
-    if (clase) {
-      const nombre = nombreClase(clase);
-      carpeta = folders.find(f => !f.parent_id && f.nombre.toLowerCase() === nombre.toLowerCase()) || await createFolder(null, nombre);
-    }
+    const carpeta = clase ? await folderDeClase(clase) : null;
     await createNotebook({ carpeta_id: carpeta?.id || null, clase,
       titulo: 'Práctica · ' + (tema || (clase ? nombreClase(clase) : 'nueva')), tema });
     return;
