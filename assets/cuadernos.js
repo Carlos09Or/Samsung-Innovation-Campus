@@ -137,7 +137,7 @@ modal.root.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { e.stopPropagation(); closeModal(null); }
   if (e.key === 'Enter' && e.target === modal.input) { e.preventDefault(); modal.ok.click(); }
 });
-const askText = (title, value = '') => openModal({ title, input: value, okLabel: 'Guardar' });
+const askText = (title, value = '', okLabel = 'Guardar') => openModal({ title, input: value, okLabel });
 const askConfirm = (title, text, okLabel = 'Eliminar', danger = true) => openModal({ title, text, okLabel, danger }).then(Boolean);
 const notify = (title, text = '') => openModal({ title, text, cancel: false });
 
@@ -198,7 +198,7 @@ function renderTree() {
     const addSub = h('button', { type: 'button', title: 'Nueva subcarpeta', 'aria-label': 'Nueva subcarpeta en ' + f.nombre }, '＋📁');
     addSub.addEventListener('click', () => createFolder(f.id));
     const addNb = h('button', { type: 'button', title: 'Nuevo cuaderno aquí', 'aria-label': 'Nuevo cuaderno en ' + f.nombre }, '＋📄');
-    addNb.addEventListener('click', () => createNotebook({ carpeta_id: f.id }));
+    addNb.addEventListener('click', () => askNewNotebook(f.id));
     const ren = h('button', { type: 'button', title: 'Renombrar', 'aria-label': 'Renombrar ' + f.nombre }, '✎');
     ren.addEventListener('click', () => renameFolder(f));
     const del = h('button', { type: 'button', title: 'Eliminar carpeta', 'aria-label': 'Eliminar ' + f.nombre }, '🗑');
@@ -216,7 +216,11 @@ function renderTree() {
     const main = h('button', { type: 'button', class: 'row-main', title: n.titulo || 'Cuaderno sin título' });
     main.append(h('span', { class: 'caret' }), h('span', { class: 'row-icon' }, '📄'), h('span', { class: 'name' }, n.titulo || 'Cuaderno sin título'));
     main.addEventListener('click', () => { openNotebook(n.id); closeSide(); });
-    row.append(main);
+    const actions = h('div', { class: 'row-actions' });
+    const ren = h('button', { type: 'button', title: 'Cambiar nombre', 'aria-label': 'Cambiar el nombre de ' + (n.titulo || 'Cuaderno sin título') }, '✎');
+    ren.addEventListener('click', () => renameNotebook(n.id));
+    actions.append(ren);
+    row.append(main, actions);
     el.tree.append(row);
   };
 
@@ -279,8 +283,34 @@ async function createNotebook({ carpeta_id = selectedFolder, titulo = 'Cuaderno 
     if (carpeta_id) collapsed.delete(carpeta_id);
     showNotebook(nuevo, 0);
     closeSide();
-    if (tema) el.notes.focus(); else el.nbTitle.select();
+    if (tema) el.notes.focus(); else el.slideTitle.focus();
   } catch (err) { notify('No se pudo crear el cuaderno', err.message); }
+}
+async function askNewNotebook(carpeta_id = selectedFolder) {
+  const titulo = await askText('Nombre del cuaderno nuevo', '', 'Crear');
+  if (titulo === null) return;
+  await createNotebook({ carpeta_id, titulo: titulo.trim().slice(0, 200) || 'Cuaderno sin título' });
+}
+async function renameNotebook(id) {
+  const meta = notebooks.find(n => n.id === id);
+  if (!meta) return;
+  const titulo = await askText('Nombre del cuaderno', meta.titulo || '');
+  if (titulo === null || !titulo.trim() || titulo.trim() === meta.titulo) return;
+  const nuevo = titulo.trim().slice(0, 200);
+  if (nb && nb.id === id) {
+    nb.titulo = meta.titulo = el.nbTitle.value = nuevo;
+    document.title = nuevo + ' | Mis cuadernos';
+    scheduleSave(); renderTree();
+    return;
+  }
+  try {
+    const full = await store.getNotebook(id);
+    if (!full) return;
+    full.titulo = nuevo; full.actualizado = now();
+    await store.saveNotebook(full);
+    Object.assign(meta, { titulo: nuevo, actualizado: full.actualizado });
+    renderTree();
+  } catch (err) { notify('No se pudo cambiar el nombre', err.message); }
 }
 async function openNotebook(id) {
   if (nb && nb.id === id) return;
@@ -297,7 +327,7 @@ function showNotebook(data, pos) {
   nb = data;
   safeSet('sic:cuadernos:ultimo', nb.id);
   el.empty.hidden = true; el.editor.hidden = false;
-  el.nbTitle.disabled = false; el.nbTitle.value = nb.titulo || '';
+  el.nbTitle.disabled = false; el.nbTitle.value = nb.titulo || ''; $('rename-nb').disabled = false;
   document.title = (nb.titulo || 'Cuaderno') + ' | Mis cuadernos';
   setStatus(store.nombre === 'nube' ? 'En la nube' : 'En este navegador');
   renderTree(); updateOverline();
@@ -306,7 +336,7 @@ function showNotebook(data, pos) {
 function closeNotebook() {
   nb = null; idx = 0;
   el.editor.hidden = true; el.empty.hidden = false;
-  el.nbTitle.value = ''; el.nbTitle.disabled = true; setStatus('');
+  el.nbTitle.value = ''; el.nbTitle.disabled = true; $('rename-nb').disabled = true; setStatus('');
   document.title = 'Mis cuadernos | Python · Samsung Innovation Campus';
   renderTree();
 }
@@ -576,7 +606,7 @@ async function initAuth() {
 
 // ---------- Eventos ----------
 function bindText(input, apply) { input.addEventListener('input', () => { if (nb) { apply(input.value); scheduleSave(); } }); }
-bindText(el.nbTitle, v => { nb.titulo = v; const meta = notebooks.find(n => n.id === nb.id); if (meta) meta.titulo = v; renderTree(); });
+bindText(el.nbTitle, v => { nb.titulo = v; document.title = (v || 'Cuaderno') + ' | Mis cuadernos'; const meta = notebooks.find(n => n.id === nb.id); if (meta) meta.titulo = v; renderTree(); });
 bindText(el.slideTitle, v => { slide().titulo = v; });
 bindText(el.notes, v => { slide().notas = v; autoGrow(el.notes, notesMin()); });
 bindText(el.code, v => { slide().codigo = v; autoGrow(el.code, 170); });
@@ -595,8 +625,9 @@ el.folderSelect.addEventListener('change', () => {
   scheduleSave(); renderTree(); updateOverline();
 });
 $('new-folder').addEventListener('click', () => createFolder(null));
-$('new-notebook').addEventListener('click', () => createNotebook());
-$('empty-new').addEventListener('click', () => createNotebook());
+$('new-notebook').addEventListener('click', () => askNewNotebook());
+$('empty-new').addEventListener('click', () => askNewNotebook());
+$('rename-nb').addEventListener('click', () => { if (nb) renameNotebook(nb.id); });
 $('delete-notebook').addEventListener('click', deleteNotebook);
 $('add-slide').addEventListener('click', addSlide);
 $('dup-slide').addEventListener('click', duplicateSlide);
