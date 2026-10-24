@@ -1,0 +1,923 @@
+---
+title: "Clase 3 — Funciones"
+subtitle: "Samsung Innovation Campus · Capítulo 3"
+lang: es
+format:
+  live-revealjs:
+    theme: night
+    transition: fade
+    navigation-mode: linear
+    slide-number: c/t
+    progress: true
+    controls: true
+    code-copy: true
+    smaller: true
+    scrollable: true
+    css: assets/quarto.css
+execute:
+  eval: false
+---
+
+## Ruta de la clase {.scrollable}
+
+<span class="study-topic">Inicio</span>
+
+Cinco bloques, del concepto básico a las funciones que recuerdan datos.
+
+- 01 · Anatomía: `def`, nombre, parámetros, cuerpo y `return`.
+- 02 · Tipos de parámetros: obligatorios, por palabra clave y por defecto.
+- 03 · `return` y el valor especial `None`.
+- 04 · Closures: funciones dentro de funciones.
+- 05 · Reto final con todo lo anterior.
+
+::: {.callout-tip title="Idea clave"}
+Una función es una receta con nombre: la escribes una vez y la usas cuantas veces quieras.
+:::
+
+# 01 / Anatomía de una función
+
+Definir una vez, usar muchas veces.
+
+## Las cinco partes de una función {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+Cada función tiene la misma estructura, por pequeña que sea.
+
+- `def` anuncia que vas a definir una función.
+- El **nombre** (`saludar`) es con lo que luego la llamas.
+- Los **parámetros** van entre paréntesis: `nombre`.
+- El **cuerpo** va indentado; `return` entrega el resultado.
+
+```{pyodide}
+def saludar(nombre):  # 'nombre' es un parámetro
+    """Esta función saluda a la persona con el nombre dado."""
+    return f"Hola, {nombre}!"  # valor de retorno
+
+mensaje = saludar("Ana")  # "Ana" es el argumento
+print(mensaje)
+```
+
+**Salida esperada**
+
+```text
+Hola, Ana!
+```
+
+::: {.callout-tip title="Idea clave"}
+Definir la función no la ejecuta: solo se ejecuta cuando la llamas con `saludar(...)`.
+:::
+
+## Definir no es ejecutar {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+Python lee la definición y la guarda; el cuerpo corre en cada llamada.
+
+- Al definir, Python solo recuerda la receta.
+- Cada llamada `nombre()` vuelve a ejecutar el cuerpo completo.
+- Por eso puedes llamar la misma función muchas veces.
+
+```{pyodide}
+def anunciar():
+    print("¡Llegó el café!")
+
+print("Antes de llamar")
+anunciar()
+anunciar()
+print("Después de llamar")
+```
+
+**Salida esperada**
+
+```text
+Antes de llamar
+¡Llegó el café!
+¡Llegó el café!
+Después de llamar
+```
+
+::: {.callout-tip title="Idea clave"}
+Predice la salida antes de ejecutar: ¿cuántas veces aparece el anuncio?
+:::
+
+## Parámetros frente a argumentos {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+Son dos caras de lo mismo: el hueco y el valor que lo llena.
+
+- **Parámetro**: el nombre en la definición (`base`, `altura`).
+- **Argumento**: el valor real en la llamada (`10`, `5`).
+- El parámetro solo existe dentro de la función.
+
+```{pyodide}
+# DEFINICIÓN: 'base' y 'altura' son los PARÁMETROS
+def calcular_area_triangulo(base, altura):
+    area = 0.5 * base * altura
+    return area
+
+# LLAMADA: 10 y 5 son los ARGUMENTOS
+area_del_triangulo = calcular_area_triangulo(10, 5)
+print(area_del_triangulo)
+```
+
+**Salida esperada**
+
+```text
+25.0
+```
+
+::: {.callout-tip title="Idea clave"}
+Truco para recordarlo: el **p**arámetro está en la **p**lantilla; el **a**rgumento es lo que **a**portas al llamar.
+:::
+
+## Ejemplo · Preparar un café ☕ {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+Eres barista: la receta es la función y el pedido del cliente son los argumentos.
+
+- Nombre: `preparar_cafe`.
+- Parámetros: `tipo_cafe` y `cantidad_leche`.
+- Cuerpo: los pasos; aquí, un `print`.
+- Retorno: el café listo que entregas.
+
+```{pyodide}
+def preparar_cafe(tipo_cafe, cantidad_leche):
+    print(f"Preparando un {tipo_cafe} con {cantidad_leche}.")
+    return "¡Aquí está tu café!"
+
+cafe_listo = preparar_cafe("capuchino", "mucha leche")
+print(cafe_listo)
+```
+
+**Salida esperada**
+
+```text
+Preparando un capuchino con mucha leche.
+¡Aquí está tu café!
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab la salida guardada dice «Preparando un espresso…», pero el código llama con `"capuchino"`: esa salida es de una ejecución anterior. La salida real es la de aquí.
+:::
+
+## Ejemplo · Área de un terreno {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+Ahora eres ingeniero: la fórmula es la función y las medidas reales son los argumentos.
+
+- Parámetros: `largo` y `ancho`.
+- Cuerpo: multiplicar `largo * ancho`.
+- El resultado se guarda en una variable para usarlo después.
+
+```{pyodide}
+def calcular_area_rectangulo(largo, ancho):
+    """Calcula el área de un rectángulo."""
+    area = largo * ancho
+    return area
+
+area_terreno = calcular_area_rectangulo(40, 20)
+print(f"El área del terreno es de {area_terreno} metros cuadrados.")
+```
+
+**Salida esperada**
+
+```text
+El área del terreno es de 800 metros cuadrados.
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+El comentario del Colab dice «20 y 15 son los argumentos», pero la llamada usa `40` y `20`; por eso el resultado es 800.
+:::
+
+## Repaso · La máquina de hacer jugo 🍹 {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+El mismo esquema en otro contexto: ingredientes, pasos y producto final.
+
+- `fruta` y `azucar_cucharadas` son los parámetros.
+- `"naranja"` y `2` son los argumentos.
+- El `print` ocurre dentro; el `return` sale de la función.
+
+```{pyodide}
+def hacer_jugo(fruta, azucar_cucharadas):
+    print(f"Mezclando {fruta} con {azucar_cucharadas} cucharadas de azúcar.")
+    return f"Aquí está tu jugo de {fruta}."
+
+jugo_listo = hacer_jugo("naranja", 2)
+print(jugo_listo)
+```
+
+**Salida esperada**
+
+```text
+Mezclando naranja con 2 cucharadas de azúcar.
+Aquí está tu jugo de naranja.
+```
+
+::: {.callout-tip title="Idea clave"}
+Cambia los argumentos (por ejemplo `"mango", 0`) y vuelve a ejecutar.
+:::
+
+## Docstring: documenta tu función {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+El texto entre triples comillas justo debajo de `def` explica qué hace la función.
+
+- Se llama **docstring** y es opcional, pero muy recomendable.
+- Python lo guarda en `función.__doc__`.
+- `help(función)` lo muestra.
+
+```{pyodide}
+def calcular_area_rectangulo(largo, ancho):
+    """Calcula el área de un rectángulo."""
+    return largo * ancho
+
+print(calcular_area_rectangulo.__doc__)
+```
+
+**Salida esperada**
+
+```text
+Calcula el área de un rectángulo.
+```
+
+::: {.callout-tip title="Idea clave"}
+Una buena docstring responde: ¿qué recibe y qué devuelve?
+:::
+
+## Práctica 01 · Tu primera función {.scrollable}
+
+<span class="study-topic">Anatomía</span>
+
+Aplica las cinco partes en una función nueva.
+
+**Ponte a prueba**
+
+Escribe `celsius_a_fahrenheit(c)` que devuelva `c * 9 / 5 + 32`. Imprime el resultado para 0 °C y para 37 °C.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```{pyodide}
+def celsius_a_fahrenheit(c):
+    """Convierte grados Celsius a Fahrenheit."""
+    return c * 9 / 5 + 32
+
+print(celsius_a_fahrenheit(0))
+print(celsius_a_fahrenheit(37))
+```
+
+**Salida esperada**
+
+```text
+32.0
+98.6
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Usa `return`, no `print`, dentro de la función: así el resultado se puede reutilizar.
+:::
+
+# 02 / Parámetros y argumentos
+
+Cómo llegan los datos a una función.
+
+## Parámetros posicionales obligatorios {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Python asigna los argumentos por su posición: el primero al primer parámetro, y así sucesivamente.
+
+- El orden importa: `restar(5, 15)` no es `restar(15, 5)`.
+- Si falta un argumento, Python lanza `TypeError`.
+
+```{pyodide}
+def restar(a, b):
+    return a - b
+
+print(restar(5, 15))   # a=5, b=15
+try:
+    restar(10)         # falta b
+except TypeError as error:
+    print("Error:", error)
+```
+
+**Salida esperada**
+
+```text
+-10
+Error: restar() missing 1 required positional argument: 'b'
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab el comentario dice «a=10, b=6», pero la llamada es `restar(5, 15)`: `a` vale 5, `b` vale 15 y el resultado es -10.
+:::
+
+## Argumentos por palabra clave {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Escribes el nombre del parámetro al llamar, y el orden deja de importar.
+
+- `restar(b=19, a=26)` asigna por nombre, no por posición.
+- Hace las llamadas más claras cuando hay muchos parámetros.
+
+```{pyodide}
+def restar(a, b):
+    return a - b
+
+print(restar(b=19, a=26))
+print(restar(a=26, b=19))
+```
+
+**Salida esperada**
+
+```text
+7
+7
+```
+
+::: {.callout-tip title="Idea clave"}
+Las dos llamadas dan lo mismo: lo que manda es el nombre, no el lugar.
+:::
+
+## Parámetros con valor por defecto {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Si no envías ese argumento, la función usa el valor que trae de fábrica.
+
+- `mensaje="Hola"` define el valor por defecto.
+- Si lo envías, se sobrescribe.
+- Los parámetros con valor por defecto van al final.
+
+```{pyodide}
+def saludar(nombre, mensaje="Hola"):
+    return f"{mensaje}, {nombre}!"
+
+print(saludar("Ana"))
+print(saludar("Juan", mensaje="Hola de nuevo"))
+print(saludar("Pedro", mensaje="Buenos días"))
+```
+
+**Salida esperada**
+
+```text
+Hola, Ana!
+Hola de nuevo, Juan!
+Buenos días, Pedro!
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab solo se ve `'Hola de nuevo, Pedro!'` porque una celda muestra únicamente el valor de su última línea. Para ver todas las llamadas, usa `print`. Además, un comentario dice «Hola de nuevo, Ana!» para la llamada con «Juan».
+:::
+
+## El orden de los nombres manda {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Lo que cuenta es cómo se llaman los parámetros en la definición, no cómo se llamen tus variables.
+
+- Por posición: el primer valor va al primer parámetro.
+- Por palabra clave: cada valor va al parámetro con ese nombre.
+- Un nombre engañoso (`restar` que hace `b - a`) confunde: nombra según lo que hace.
+
+```{pyodide}
+def restar(a, b):
+    return a - b
+
+print(restar(10, 4))      # a=10, b=4
+print(restar(4, 10))      # a=4,  b=10
+print(restar(b=4, a=10))  # por nombre
+```
+
+**Salida esperada**
+
+```text
+6
+-6
+6
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+El Colab define una versión `restar(b, a)` con el comentario «'10' es a, '5' es b» (no coincide con el código) y otra `restar(a, b)` que devuelve `b - a`. Aquí se usa una sola versión coherente.
+:::
+
+## Valor por defecto con decisión {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Un parámetro por defecto puede cambiar el comportamiento de la función.
+
+- Sin `idioma`, la función usa `"es"`.
+- Con `idioma="en"`, responde en inglés.
+- El `if` dentro del cuerpo decide qué devolver.
+
+```{pyodide}
+def saludar_con_idioma(nombre, idioma="es"):
+    if idioma == "es":
+        return f"Hola, {nombre}!"
+    else:
+        return f"Hello, {nombre}!"
+
+print(saludar_con_idioma("María"))
+print(saludar_con_idioma("John", idioma="en"))
+```
+
+**Salida esperada**
+
+```text
+Hola, María!
+Hello, John!
+```
+
+::: {.callout-tip title="Idea clave"}
+Los valores por defecto hacen que la llamada más común sea también la más corta.
+:::
+
+## Devolver varios valores {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Una función puede procesar datos y entregar varios resultados a la vez.
+
+- El parámetro `calificaciones` espera una lista.
+- `return promedio, maxima, minima` devuelve una tupla.
+- Al llamar, la desempaquetas en tres variables.
+
+```{pyodide}
+def analizar_calificaciones(calificaciones):
+    """Calcula el promedio, la nota más alta y la más baja."""
+    promedio = sum(calificaciones) / len(calificaciones)
+    maxima = max(calificaciones)
+    minima = min(calificaciones)
+    return promedio, maxima, minima
+
+notas_curso = [85, 90, 78, 92, 88]
+prom, alta, baja = analizar_calificaciones(notas_curso)
+print(f"Promedio: {prom}")
+print(f"Nota máxima: {alta}")
+print(f"Nota mínima: {baja}")
+```
+
+**Salida esperada**
+
+```text
+Promedio: 86.6
+Nota máxima: 92
+Nota mínima: 78
+```
+
+::: {.callout-tip title="Idea clave"}
+Parámetro: `calificaciones` (lo que espera). Argumento: `notas_curso` (la lista real que entregas).
+:::
+
+## Reglas para no equivocarte {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Tres reglas que evitan la mayoría de errores al llamar funciones.
+
+- Primero van los argumentos posicionales y después los de palabra clave: `saludar("Ana", mensaje="Hola")`.
+- En la definición, los parámetros con valor por defecto van después de los obligatorios.
+- No envíes el mismo parámetro dos veces: `restar(5, a=3)` da `TypeError`.
+- Si una llamada falla, lee el mensaje: Python te dice qué argumento falta o sobra.
+
+::: {.callout-tip title="Idea clave"}
+Ante la duda, usa palabras clave: la llamada se lee sola.
+:::
+
+## Práctica 02 · Precio con descuento {.scrollable}
+
+<span class="study-topic">Parámetros</span>
+
+Combina un parámetro obligatorio con uno por defecto.
+
+**Ponte a prueba**
+
+Escribe `precio_final(precio, descuento=0.1)` que devuelva el precio con el descuento aplicado. Imprime `precio_final(100)`, `precio_final(100, 0.25)` y `precio_final(descuento=0.5, precio=80)`.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```{pyodide}
+def precio_final(precio, descuento=0.1):
+    return precio * (1 - descuento)
+
+print(precio_final(100))
+print(precio_final(100, 0.25))
+print(precio_final(descuento=0.5, precio=80))
+```
+
+**Salida esperada**
+
+```text
+90.0
+75.0
+40.0
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+La tercera llamada usa palabras clave en otro orden y sigue funcionando.
+:::
+
+# 03 / return y None
+
+Lo que la función te entrega al terminar.
+
+## `return` termina la función {.scrollable}
+
+<span class="study-topic">return</span>
+
+Cuando Python llega a `return`, sale de la función de inmediato.
+
+- El valor después de `return` vuelve al lugar de la llamada.
+- El código escrito después de `return` nunca se ejecuta.
+
+```{pyodide}
+def mi_funcion():
+    print("¡Hola!")
+    return "Adiós"
+    print("Este mensaje no se imprimirá.")  # código inalcanzable
+
+valor = mi_funcion()
+print(valor)
+```
+
+**Salida esperada**
+
+```text
+¡Hola!
+Adiós
+```
+
+::: {.callout-tip title="Idea clave"}
+Piensa en `return` como la puerta de salida: lo que lleves en la mano es lo que entregas.
+:::
+
+## Varios valores = una tupla {.scrollable}
+
+<span class="study-topic">return</span>
+
+Si devuelves varios valores separados por comas, Python los empaqueta en una tupla.
+
+- `datos` recibe la tupla completa.
+- También puedes desempaquetarla en variables separadas.
+
+```{pyodide}
+def get_datos_personales():
+    nombre = "Ana"
+    edad = 30
+    ciudad = "Madrid"
+    return nombre, edad, ciudad
+
+datos = get_datos_personales()
+print(datos)
+nombre, edad, ciudad = get_datos_personales()
+print(nombre, "vive en", ciudad)
+```
+
+**Salida esperada**
+
+```text
+('Ana', 30, 'Madrid')
+Ana vive en Madrid
+```
+
+::: {.callout-tip title="Idea clave"}
+Es la misma tupla de la Clase 1, solo que creada por una función.
+:::
+
+## Sin `return`, la función devuelve `None` {.scrollable}
+
+<span class="study-topic">return</span>
+
+Aunque no escribas `return`, Python siempre devuelve algo: el valor especial `None`.
+
+- `None` significa «nada» o «ausencia de valor».
+- Una función que solo imprime hace algo visible, pero no entrega nada.
+- Guardar su resultado en una variable da `None`.
+
+```{pyodide}
+def mostrar_alerta(mensaje):
+    """Muestra un mensaje de advertencia en la pantalla."""
+    print(f"[ALERTA]: {mensaje}")
+
+resultado = mostrar_alerta("Batería baja")
+print(resultado)
+```
+
+**Salida esperada**
+
+```text
+[ALERTA]: Batería baja
+None
+```
+
+::: {.callout-tip title="Idea clave"}
+`return` sin valor también devuelve `None`.
+:::
+
+## `print` frente a `return` {.scrollable}
+
+<span class="study-topic">return</span>
+
+Es la confusión más común: mostrar un valor no es lo mismo que devolverlo.
+
+- `print` muestra en pantalla y la función devuelve `None`.
+- `return` entrega el valor para que lo uses después.
+- Solo con `return` puedes hacer `doble(5) + 1`.
+
+```{pyodide}
+def doble_con_print(x):
+    print(x * 2)
+
+def doble_con_return(x):
+    return x * 2
+
+a = doble_con_print(5)
+b = doble_con_return(5)
+print(a, b)
+print(b + 1)
+```
+
+**Salida esperada**
+
+```text
+10
+None 10
+11
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab hay una celda con `return` escrito fuera de una función, junto a la analogía del trabajador. Al ejecutarla, Python da `SyntaxError: 'return' outside function`: `return` solo puede ir dentro de una función.
+:::
+
+## Práctica 03 · ¿Qué imprime? {.scrollable}
+
+<span class="study-topic">return</span>
+
+Predice la salida antes de abrir la solución.
+
+**Ponte a prueba**
+
+Dada `def clasificar(x):` con `if x > 0: return "positivo"` y después `print("no positivo")`, ¿qué muestran `print(clasificar(3))` y `print(clasificar(-1))`?
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```{pyodide}
+def clasificar(x):
+    if x > 0:
+        return "positivo"
+    print("no positivo")
+
+print(clasificar(3))
+print(clasificar(-1))
+```
+
+**Salida esperada**
+
+```text
+positivo
+no positivo
+None
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Con -1 no se llega al `return`: se imprime el mensaje y la función devuelve `None`.
+:::
+
+# 04 / Closures
+
+Funciones que recuerdan de dónde vienen.
+
+## ¿Qué es un closure? {.scrollable}
+
+<span class="study-topic">Closures</span>
+
+Una función anidada que recuerda las variables de la función que la creó, incluso cuando esa función ya terminó.
+
+- **Mensajero privado**: la oficina (función exterior) cierra, pero el mensajero (función interior) se lleva el documento que necesita.
+- **Fotógrafo de bodas**: la dirección de los novios queda apuntada en el cuaderno del asistente aunque la oficina ya no opere.
+- Ese «paquete de memoria» que viaja con la función interior es el closure.
+
+::: {.callout-tip title="Idea clave"}
+Tres ingredientes: una función dentro de otra, que usa una variable de afuera y que se devuelve sin ejecutarla.
+:::
+
+## Una fábrica de multiplicadores {.scrollable}
+
+<span class="study-topic">Closures</span>
+
+La función exterior recibe `a` y devuelve una función que multiplica por ese `a`.
+
+- `crear_multiplicador(2)` devuelve una función, no un número.
+- `doble` recuerda que `a = 2`; `triple` recuerda que `a = 3`.
+- Se devuelve `mult` sin paréntesis: la función misma, sin ejecutarla.
+
+```{pyodide}
+def crear_multiplicador(a):
+    def mult(x):
+        return a * x
+    return mult
+
+doble = crear_multiplicador(2)
+triple = crear_multiplicador(3)
+print(doble(10), doble(5), doble(3))
+print(triple(10))
+```
+
+**Salida esperada**
+
+```text
+20 10 6
+30
+```
+
+::: {.callout-note title="Aclaración del Colab"}
+En el Colab la función se define como `cierre_calculo`, pero se llama `cierre_calc()`: ejecutada tal cual, la celda da `NameError`. La salida «20 10 6» que se ve guardada viene de una ejecución anterior. Además, la línea `a = 2` dentro de la función anulaba el parámetro. Aquí se corrigen ambos detalles.
+:::
+
+## El fotógrafo que recuerda tu nombre 📸 {.scrollable}
+
+<span class="study-topic">Closures</span>
+
+Cada closure guarda su propio dato: un fotógrafo para Laura y otro para Luis.
+
+- `contratar_fotografo` es la función exterior.
+- `tomar_foto` es el closure: usa `nombre_cliente`.
+- Cada llamada a la fábrica crea un closure con su propia memoria.
+
+```{pyodide}
+def contratar_fotografo(nombre_cliente):
+    def tomar_foto(evento):
+        return f"Foto de {evento} tomada para {nombre_cliente}."
+    return tomar_foto
+
+fotografo_para_laura = contratar_fotografo("Laura")
+fotografo_para_luis = contratar_fotografo("Luis")
+print(fotografo_para_laura("la boda"))
+print(fotografo_para_luis("la graduación"))
+```
+
+**Salida esperada**
+
+```text
+Foto de la boda tomada para Laura.
+Foto de la graduación tomada para Luis.
+```
+
+::: {.callout-tip title="Idea clave"}
+`contratar_fotografo` ya terminó, pero cada fotógrafo sigue sabiendo para quién trabaja.
+:::
+
+## ¿Para qué sirven los closures? {.scrollable}
+
+<span class="study-topic">Closures</span>
+
+Son la base de herramientas más avanzadas de Python.
+
+- **Encapsular datos**: el dato queda guardado dentro de la función, sin variables globales.
+- **Funciones a medida**: creas versiones especializadas (un fotógrafo por cliente).
+- **Decoradores**: modifican otras funciones y se construyen con closures.
+
+::: {.callout-tip title="Idea clave"}
+Si necesitas muchas funciones casi iguales, piensa en una fábrica con closures.
+:::
+
+## Práctica 04 · Calculadora de impuestos {.scrollable}
+
+<span class="study-topic">Closures</span>
+
+Construye tu propia fábrica de funciones.
+
+**Ponte a prueba**
+
+Escribe `crear_impuesto(tasa)` que devuelva una función que reciba un precio y le sume el impuesto. Crea `iva = crear_impuesto(0.19)` y `reducido = crear_impuesto(0.05)` e imprime ambos para un precio de 100.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```{pyodide}
+def crear_impuesto(tasa):
+    def aplicar(precio):
+        return round(precio * (1 + tasa), 2)
+    return aplicar
+
+iva = crear_impuesto(0.19)
+reducido = crear_impuesto(0.05)
+print(iva(100))
+print(reducido(100))
+```
+
+**Salida esperada**
+
+```text
+119.0
+105.0
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+La función interior usa `tasa`, que pertenece a la función exterior: eso es el closure.
+:::
+
+# 05 / Reto final
+
+Todo junto en un solo programa.
+
+## Reto · Boletín de notas {.scrollable}
+
+<span class="study-topic">Reto final</span>
+
+Usa parámetros por defecto, varios valores de retorno y una función auxiliar.
+
+**Ponte a prueba**
+
+Escribe `boletin(nombre, notas, minimo=60)` que devuelva el promedio y el estado (`"Aprobado"` o `"Reprobado"`). Imprime el boletín de Ana `[85, 90, 78]` y de Luis `[50, 62, 58]` con el formato `Ana: 84.3 → Aprobado`.
+
+**Solución (ábrela cuando hayas intentado resolverlo):**
+
+<details>
+<summary>Mostrar solución</summary>
+
+```{pyodide}
+def promedio(valores):
+    return sum(valores) / len(valores)
+
+def boletin(nombre, notas, minimo=60):
+    prom = promedio(notas)
+    estado = "Aprobado" if prom >= minimo else "Reprobado"
+    return prom, estado
+
+for nombre, notas in [("Ana", [85, 90, 78]), ("Luis", [50, 62, 58])]:
+    prom, estado = boletin(nombre, notas)
+    print(f"{nombre}: {prom:.1f} → {estado}")
+```
+
+**Salida esperada**
+
+```text
+Ana: 84.3 → Aprobado
+Luis: 56.7 → Reprobado
+```
+
+</details>
+
+::: {.callout-tip title="Idea clave"}
+Divide el problema: una función calcula el promedio y otra decide el estado.
+:::
+
+## Errores y detalles detectados en el Colab {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+Revisar el código con salidas reales evita aprender algo equivocado.
+
+- La salida guardada del café dice «espresso», pero el código pide un capuchino: es de una ejecución anterior.
+- Comentarios que no coinciden con el código: «20 y 15» (son 40 y 20) y «a=10, b=6» (son 5 y 15).
+- `return` fuera de una función da `SyntaxError`.
+- `cierre_calc()` no existe (la función es `cierre_calculo`): la celda da `NameError`, y `a = 2` anulaba el parámetro.
+- Una celda solo muestra su última línea: usa `print` para ver todo.
+
+::: {.callout-tip title="Idea clave"}
+La fuente de verdad es lo que el programa hace al ejecutarlo, no el comentario.
+:::
+
+## Ficha de repaso · Clase 3 {.scrollable}
+
+<span class="study-topic">Cierre</span>
+
+Intenta responder sin mirar las diapositivas.
+
+- ¿Cuál es la diferencia entre un parámetro y un argumento?
+- ¿Qué pasa si llamas a una función con un argumento de menos?
+- ¿Qué devuelve una función que no tiene `return`?
+- ¿Por qué `doble_con_print(5) + 1` da error y `doble_con_return(5) + 1` no?
+- ¿Qué recuerda un closure y cuándo lo usarías?
+
+::: {.callout-tip title="Idea clave"}
+Próximo paso: Clase 4, donde las funciones viven dentro de las clases como métodos.
+:::

@@ -12,7 +12,9 @@ const now = () => new Date().toISOString();
 // Cada clase vive en la carpeta «Semana N / Clase N». Al agregar clases nuevas, añádelas aquí.
 const CLASES = {
   clase_1: { nombre: 'Clase 1', semana: 'Semana 1' },
-  clase_2: { nombre: 'Clase 2', semana: 'Semana 1' }
+  clase_2: { nombre: 'Clase 2', semana: 'Semana 1' },
+  clase_3: { nombre: 'Clase 3', semana: 'Semana 2' },
+  clase_4: { nombre: 'Clase 4', semana: 'Semana 2' }
 };
 const nombreClase = (c) => CLASES[c]?.nombre || c.replace(/_/g, ' ').replace(/^./, m => m.toUpperCase());
 

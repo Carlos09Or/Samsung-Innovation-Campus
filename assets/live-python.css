@@ -26,4 +26,5 @@
 .py-live-reference .output-box{margin-top:5px;}
 .py-live-note {padding:12px 17px; background:#132e39; color:#bdece0; border:1px solid #26586a;
   font-size:12px;line-height:1.55;border-radius:10px;margin:0 0 15px;}
-@media(max-width:640px){.py-live-editor{font-size:12px;min-height:85px;}.py-live-shortcut{display:none;}}
+@media(max-width:640px){.py-live-editor{font-size:12px;min-height:85px;}.py-live-shortcut{display:none;}
+  .nav-label{display:none;} nav.top .nav-right{gap:6px;}}

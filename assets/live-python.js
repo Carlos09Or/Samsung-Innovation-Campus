@@ -158,11 +158,13 @@ function localStorageSafeRead(key){try{return localStorage.getItem(key)}catch(_)
 // Permite detener bucles bloqueados reiniciando el intérprete.
 const topNav = document.querySelector('nav.top .nav-right');
 if(topNav && count){
-  const btn=h('button',{'type':'button','class':'nav-btn','title':'Detener un programa de Python bloqueado'},'■ Detener Python');
+  const btn=h('button',{'type':'button','class':'nav-btn','title':'Detener un programa de Python bloqueado','aria-label':'Detener Python'},'■');
+  btn.append(h('span',{'class':'nav-label'},' Detener Python'));
   btn.addEventListener('click',stopRunner);
   topNav.prepend(btn);
   // Abre un cuaderno nuevo ligado a esta clase y al tema de la diapositiva actual.
-  const nb=h('button',{'type':'button','class':'nav-btn','title':'Abrir un cuaderno nuevo para practicar este tema'},'＋ Cuaderno');
+  const nb=h('button',{'type':'button','class':'nav-btn','title':'Abrir un cuaderno nuevo para practicar este tema','aria-label':'Abrir un cuaderno nuevo'},'＋');
+  nb.append(h('span',{'class':'nav-label'},' Cuaderno'));
   nb.addEventListener('click',()=>{
     const active=document.querySelector('.slide.active');
     const tema=(active?.querySelector('h2,h1')?.textContent || '').trim();

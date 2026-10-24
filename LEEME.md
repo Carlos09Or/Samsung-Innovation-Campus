@@ -76,3 +76,22 @@ Si antes usaste cuadernos en modo local, tras iniciar sesión aparece el botón 
 
 Notas: los proyectos gratuitos de Supabase se pausan tras una semana sin actividad; se reactivan desde el panel de Supabase. Para respaldo, en **Database → Backups** o exportando las tablas desde **Table Editor**.
 
+
+## Semana 2 · Capítulo 3
+
+- **Fuente:** `cuadernos_originales/Clase_1_y_2_Capitulo_3_PYTHON_del_01_09_25_al_04_09_25.ipynb`.
+- El cuaderno trae las dos clases juntas; se dividió así:
+  - **Clase 3 · Funciones** (36 diapositivas): partes de una función, parámetros y argumentos, `return`, `None` y closures.
+  - **Clase 4 · Programación orientada a objetos** (27 diapositivas): clases, objetos, encapsulamiento, herencia y métodos dunder.
+- Las salidas esperadas se obtuvieron ejecutando el código; donde el Colab tenía salidas viejas o comentarios que no coinciden, la diapositiva lo indica como **Aclaración del Colab**.
+
+## Generar una clase nueva
+
+Las Clases 3 y 4 se generan con `herramientas/generar_clase.py` a partir de `herramientas/clases/clase_N.py` (una lista de diapositivas: portada, capítulo, tema con código y práctica con solución). El generador usa `clase_2.html` como plantilla visual, ejecuta cada bloque de código para obtener su salida real y escribe `clase_N.html` y `clase_N.qmd`:
+
+```bash
+python3 herramientas/generar_clase.py 3 4
+```
+
+Después, agrega la tarjeta de la clase en `index.html` y su semana en `CLASES` dentro de `assets/cuadernos.js`.
+

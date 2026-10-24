@@ -1,11 +1,15 @@
 # Samsung Innovation Campus — Biblioteca de Python
 
-Biblioteca de repaso del Capítulo 2: presentaciones HTML interactivas con Python ejecutable de las Clases 1 y 2, fuentes editables Quarto (`.qmd`) y cuadernos de Google Colab originales.
+Biblioteca de repaso por semanas (Capítulos 2 y 3): presentaciones HTML interactivas con Python ejecutable, fuentes editables Quarto (`.qmd`) y cuadernos de Google Colab originales.
 
 **Inicio:** abre [index.html](index.html) en un navegador o, una vez activado GitHub Pages, visita la página de este repositorio.
 
-- [Clase 1: Estructuras de datos](clase_1.html)
-- [Clase 2: Aplicaciones prácticas](clase_2.html)
+- **Semana 1 · Capítulo 2**
+  - [Clase 1: Estructuras de datos](clase_1.html)
+  - [Clase 2: Módulos y matrices](clase_2.html)
+- **Semana 2 · Capítulo 3**
+  - [Clase 3: Funciones](clase_3.html)
+  - [Clase 4: Programación orientada a objetos](clase_4.html)
 - [Mis cuadernos: diapositivas propias con Python](cuadernos.html)
 - [Guía de uso y edición](LEEME.md)
 
